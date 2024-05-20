@@ -1,0 +1,44 @@
+@import "../../../../assets/variables";
+
+.intro {
+    margin-top: 50px;
+    background-color: $white;
+    width: 100%;
+    display: flex;
+    flex: 1;
+    margin-right: $right;
+    padding: 0 1rem;
+
+    &__top {
+        width: 100%;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        a,
+        p {
+            width: 170px;
+            height: 40px;
+            display: flex;
+            gap: 10px;
+            font-size: $xs;
+            color: $black;
+            font-weight: 600;
+            align-items: center;
+            justify-content: center;
+            border-radius: $radius;
+            background-color: #00000040;
+            box-shadow: 0px 4px 4px 0px #00000040 inset;
+
+            i {
+                color: $gary;
+            }
+        }
+
+        a {
+            background-color: $white;
+            box-shadow: $shadow;
+        }
+    }
+}
