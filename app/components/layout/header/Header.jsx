@@ -31,6 +31,18 @@ const Header = () => {
         });
     };
 
+    const handleF1 = () => {
+        console.log('Нақд');
+    };
+
+    const handleF2 = () => {
+        console.log('Карта');
+    };
+
+    const handleF3 = () => {
+        console.log('Насия');
+    };
+
     const handleKeyDown = (event) => {
         switch (event.key) {
             case 'F1':
@@ -56,18 +68,6 @@ const Header = () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
     }, []);
-
-    const handleF1 = () => {
-        console.log('Нақд');
-    };
-
-    const handleF2 = () => {
-        console.log('Карта');
-    };
-
-    const handleF3 = () => {
-        console.log('Насия');
-    };
 
 
     return (
