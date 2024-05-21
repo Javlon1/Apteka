@@ -1,124 +1,218 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import styles from './Intro.module.scss';
 import { Context } from '@/app/components/ui/Context/Context';
+
 const data = [
     {
         id: 1,
-        name: 'Item 1',
-        type: 'Type 1',
-        unit: 'Unit 1',
-        quantity: 100,
-        category: 'Category 1',
-        warehouse: 'Warehouse 1',
-        maxQuantity: 200,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "20.04.2026",
+        in_box: 20,
+        ball: 2000
     },
     {
         id: 2,
-        name: 'Item 2',
-        type: 'Type 2',
-        unit: 'Unit 2',
-        quantity: 150,
-        category: 'Category 2',
-        warehouse: 'Warehouse 2',
-        maxQuantity: 300,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "21.04.2026",
+        in_box: 20,
+        ball: 2000
     },
     {
         id: 3,
-        name: 'Item 3',
-        type: 'Type 1',
-        unit: 'Unit 3',
-        quantity: 200,
-        category: 'Category 3',
-        warehouse: 'Warehouse 3',
-        maxQuantity: 250,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "22.04.2026",
+        in_box: 20,
+        ball: 2000
     },
     {
         id: 4,
-        name: 'Item 4',
-        type: 'Type 3',
-        unit: 'Unit 4',
-        quantity: 120,
-        category: 'Category 1',
-        warehouse: 'Warehouse 1',
-        maxQuantity: 220,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "23.04.2026",
+        in_box: 20,
+        ball: 2000
     },
     {
         id: 5,
-        name: 'Item 5',
-        type: 'Type 2',
-        unit: 'Unit 5',
-        quantity: 130,
-        category: 'Category 2',
-        warehouse: 'Warehouse 2',
-        maxQuantity: 180,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "24.04.2026",
+        in_box: 20,
+        ball: 2000
     },
     {
         id: 6,
-        name: 'Item 6',
-        type: 'Type 3',
-        unit: 'Unit 6',
-        quantity: 160,
-        category: 'Category 3',
-        warehouse: 'Warehouse 3',
-        maxQuantity: 190,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "25.04.2026",
+        in_box: 20,
+        ball: 2000
     },
     {
         id: 7,
-        name: 'Item 7',
-        type: 'Type 1',
-        unit: 'Unit 7',
-        quantity: 110,
-        category: 'Category 1',
-        warehouse: 'Warehouse 1',
-        maxQuantity: 210,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "26.04.2026",
+        in_box: 20,
+        ball: 2000
     },
     {
         id: 8,
-        name: 'Item 8',
-        type: 'Type 2',
-        unit: 'Unit 8',
-        quantity: 140,
-        category: 'Category 2',
-        warehouse: 'Warehouse 2',
-        maxQuantity: 230,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "27.04.2026",
+        in_box: 20,
+        ball: 2000
     },
     {
         id: 9,
-        name: 'Item 9',
-        type: 'Type 3',
-        unit: 'Unit 9',
-        quantity: 170,
-        category: 'Category 3',
-        warehouse: 'Warehouse 3',
-        maxQuantity: 240,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "28.04.2026",
+        in_box: 20,
+        ball: 2000
     },
     {
         id: 10,
-        name: 'Item 10',
-        type: 'Type 1',
-        unit: 'Unit 10',
-        quantity: 190,
-        category: 'Category 1',
-        warehouse: 'Warehouse 1',
-        maxQuantity: 260,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "29.04.2026",
+        in_box: 20,
+        ball: 2000
     },
     {
         id: 11,
-        name: 'Item 11',
-        type: 'Type 2',
-        unit: 'Unit 11',
-        quantity: 180,
-        category: 'Category 2',
-        warehouse: 'Warehouse 2',
-        maxQuantity: 270,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "30.04.2026",
+        in_box: 20,
+        ball: 2000
     },
-];
+    {
+        id: 12,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "01.05.2026",
+        in_box: 20,
+        ball: 2000
+    },
+    {
+        id: 13,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "02.05.2026",
+        in_box: 20,
+        ball: 2000
+    },
+    {
+        id: 14,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "03.05.2026",
+        in_box: 20,
+        ball: 2000
+    },
+    {
+        id: 15,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "04.05.2026",
+        in_box: 20,
+        ball: 2000
+    },
+    {
+        id: 16,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "05.05.2026",
+        in_box: 20,
+        ball: 2000
+    },
+    {
+        id: 17,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "06.05.2026",
+        in_box: 20,
+        ball: 2000
+    },
+    {
+        id: 18,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "07.05.2026",
+        in_box: 20,
+        ball: 2000
+    },
+    {
+        id: 19,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "08.05.2026",
+        in_box: 20,
+        ball: 2000
+    },
+    {
+        id: 20,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        made_in: "Узбекистан",
+        expiration: "09.05.2026",
+        in_box: 20,
+        ball: 2000
+    }
+]
 
 const Intro = () => {
-    const { checkNumber, setCheckNumber } = useContext(Context);
+    const { checkNumber, setCheckNumber, order, setOrder } = useContext(Context);
     const [dateTime, setDateTime] = useState(new Date());
+    const [modal, setModal] = useState(false)
 
+
+    // Date Format
     useEffect(() => {
         const timer = setInterval(() => {
             setDateTime(new Date());
@@ -126,19 +220,27 @@ const Intro = () => {
         return () => clearInterval(timer);
     }, []);
 
+    const formatDate = (date) => {
+        return date.toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    };
+    // Date Format
 
+
+    // Data-Table Start
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [filterText, setFilterText] = useState('');
-    const [filterType, setFilterType] = useState('');
 
     const totalPages = Math.ceil(data.length / itemsPerPage);
 
     const filteredData = data.filter((item) => {
         const matchesFilterText = JSON.stringify(item).toLowerCase().includes(filterText.toLowerCase());
-        const matchesFilterType = filterType === '' || item.type.toLowerCase() === filterType.toLowerCase();
 
-        return matchesFilterText && matchesFilterType;
+        return matchesFilterText;
     });
 
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -156,33 +258,139 @@ const Intro = () => {
     const handlePrevPage = () => {
         setCurrentPage((prevPage) => prevPage - 1);
     };
+    // Data-Table End
 
+
+    // Filter Start
     const handleFilterChange = (e) => {
         setFilterText(e.target.value);
+        setSearch(e.target.value);
         setCurrentPage(1);
     };
 
-    const handleItemsPerPageChange = (e) => {
-        setItemsPerPage(parseInt(e.target.value, 10));
+    const [search, setSearch] = useState('');
+    const inputRef = useRef(null);
+
+    const handleSearchChange = (e) => {
+        setSearch(e.target.value);
+    };
+
+    const handleSearchFilter = (e) => {
+        e.preventDefault();
+        console.log(`ok-${search}`);
+
+        setFilterText(search);
         setCurrentPage(1);
     };
 
-    const handleTypeFilterChange = (e) => {
-        setFilterType(e.target.value);
-        setCurrentPage(1);
+    const handleKeyPress = (event) => {
+        if (event.keyCode === 70 && (event.metaKey || event.ctrlKey)) {
+            event.preventDefault();
+            inputRef.current.focus();
+        }
     };
 
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyPress);
+        return () => {
+            window.removeEventListener('keydown', handleKeyPress);
+        };
+    }, []);
+    // Filter End
 
-    const formatDate = (date) => {
-        return date.toLocaleDateString('ru-RU', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
+
+    // Order Start
+    const [totalPrice, setTotalPrice] = useState(0);
+
+    const addOrder = (item) => {
+        const newOrder = [...new Set([...order, item])];
+        setOrder(newOrder);
     };
+
+    const delOrder = (id) => {
+        const newOrder = order.filter(item => item.id !== id);
+        setOrder(newOrder);
+    };
+
+    useEffect(() => {
+        const total = order.reduce((sum, item) => sum + item.price, 0);
+        setTotalPrice(total);
+    }, [order]);
+    // Order End
+
+
 
     return (
         <section className={styles.intro}>
+            <div
+                className={`${styles.modalOpacity} ${modal ? styles.actModal : ""}`}
+                onClick={() => {
+                    setModal(false)
+                }}
+            ></div>
+
+            <div className={`${styles.modal} ${modal ? styles.actModal : ""}`}>
+                <div className={styles.modal__body}>
+                    <p>Микдори</p>
+                    <div className={styles.modal__body__header}>
+                        <b>BROMGEKSIN-8 BERLIN -XEMI 8MG TAB №25</b>
+                        <b>BERLIN - XEMI, GERMANIYA</b>
+                    </div>
+                    <div className={styles.modal__body__center}>
+                        <div>
+                            <div>
+                                <div>
+                                    <span>
+                                        <p>Серияси</p>
+                                        <input type="text" />
+                                    </span>
+                                    <span>
+                                        <p>Муддати</p>
+                                        <input type="text" />
+                                    </span>
+                                </div>
+                                <span>
+                                    <p>Нархи</p>
+                                    <input type="text" />
+                                </span>
+                            </div>
+                            <span>
+                                <p>ҚолдиҚ</p>
+                                <input type="text" />
+                            </span>
+                        </div>
+                        <div>
+                            <div>
+                                <input type="text" />
+                                <div>
+                                    <input type="text" />
+                                    <input type="text" />
+                                </div>
+                            </div>
+                            <div>
+                                <input type="text" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className={styles.modal__body__footer}>
+                        <div>
+                            <p>тасдиҚлаш</p>
+                            <button onClick={() => { }}>
+                                <i className="fa-solid fa-check"></i>
+                            </button>
+                            <button>
+                                <i className="fa-solid fa-x"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <b>BERLIN- XEMI GERMANIYA</b>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className={styles.intro__top}>
                 <p>
                     <i className="fa-regular fa-file-lines"></i>
@@ -200,23 +408,32 @@ const Intro = () => {
                         <table>
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th>Тўлиқ номи</th>
-                                    <th>Қолдиқ</th>
+                                    <th>Миқдори</th>
                                     <th>Нархи</th>
                                     <th>Яроқлилик муддати</th>
                                     <th>Қадоқда</th>
-                                    <th>Балл</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentData.map((item, key) => (
+                                {order.map((item, key) => (
                                     <tr key={key} className={key % 2 === 0 ? styles.tableBc : ""}>
-                                        <td className={styles.name}>{item.name}</td>
-                                        <td>{item.type}</td>
-                                        <td>{item.unit}</td>
-                                        <td>{item.quantity}</td>
-                                        <td>{item.category}</td>
-                                        <td>{item.warehouse}</td>
+                                        <td className={styles.icon__list}>
+                                            <button
+                                                className={`${styles.icon__list__item} ${styles.red}`}
+                                                onClick={() => {
+                                                    delOrder(item.id);
+                                                }}
+                                            >
+                                                <i className="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                        <td>{item.name}</td>
+                                        <td>{(item.quantity).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                        <td>{(item.price).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                        <td>{item.expiration}</td>
+                                        <td>{(item.in_box).toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -231,11 +448,11 @@ const Intro = () => {
                         </div>
                         <div className={styles.intro__center__right__list__item}>
                             <p>Бугунги сана:</p>
-                            <b>{formatDate(dateTime)}</b>
+                            <b className={styles.date}>{formatDate(dateTime)}</b>
                         </div>
                         <div className={styles.intro__center__right__list__item}>
                             <p>Тўловга:</p>
-                            <b>23.000</b>
+                            <b>{(totalPrice).toLocaleString('en-US').replace(/,/g, ' ')}</b>
                         </div>
                         <div className={styles.intro__center__right__list__item}>
                             <p>Чегирма:</p>
@@ -243,37 +460,55 @@ const Intro = () => {
                         </div>
                         <div className={styles.intro__center__right__list__item}>
                             <p>Жами:</p>
-                            <b>23.000</b>
+                            <b>{(totalPrice).toLocaleString('en-US').replace(/,/g, ' ')}</b>
                         </div>
                     </div>
-                    <button className={styles.intro__center__right__btn}>
+                    <button onClick={() => { setOrder([]) }} className={styles.intro__center__right__btn}>
                         <i className="fa-solid fa-xmark"></i>
                         Чекни ёпиш
                     </button>
                 </div>
             </div>
 
+            <div className={styles.intro__controls}>
+                <span>Тўловга: <p>{(totalPrice).toLocaleString('en-US').replace(/,/g, ' ')}</p></span>
+                <form onSubmit={handleSearchFilter} className={styles.intro__controls__search}>
+                    <button type='submit'>
+                        <i className="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    <input
+                        ref={inputRef}
+                        type="text"
+                        placeholder='Номи/Таркиби бўйича қидириш'
+                        // value={search}
+                        // onChange={handleSearchChange}
+                        value={filterText}
+                        onChange={handleFilterChange}
+                    />
+                    <b>⌘ F</b>
+                    {search && (
+                        <p onClick={() => {
+                            setSearch("");
+                            setFilterText("")
+                        }}>
+                            <i className="fa-solid fa-x"></i>
+                        </p>
+                    )}
+                </form>
+            </div>
+
             <div className={styles.intro__bottom}>
                 <div className={styles.dataTable}>
                     <div className={styles.dataTable__table}>
-                        <div className={styles.dataTable__table__controls}>
-                            <label className={styles.dataTable__table__controls__search}>
-                                <p>Search:</p>
-                                <input
-                                    type="search"
-                                    placeholder
-                                    value={filterText}
-                                    onChange={handleFilterChange}
-                                />
-                            </label>
-                        </div>
 
                         <table>
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th>Тўлиқ номи</th>
                                     <th>Қолдиқ</th>
                                     <th>Нархи</th>
+                                    <th>Иш.Чиқ</th>
                                     <th>Яроқлилик муддати</th>
                                     <th>Қадоқда</th>
                                     <th>Балл</th>
@@ -282,17 +517,36 @@ const Intro = () => {
                             </thead>
                             <tbody>
                                 {currentData.map((item, key) => (
-                                    <tr key={key} className={key % 2 === 0 ? styles.tableBc : ""}>
-                                        <td>{item.name}</td>
-                                        <td>{item.type}</td>
-                                        <td>{item.unit}</td>
-                                        <td>{item.quantity}</td>
-                                        <td>{item.category}</td>
-                                        <td>{item.warehouse}</td>
+                                    <tr key={key} className={order.includes(item) ? styles.green : key % 2 === 0 ? styles.tableBc : ""}>
                                         <td className={styles.icon__list}>
-                                            <button
-                                                className={styles.icon__list__item}
-                                            >
+                                            {order.includes(item) ? (
+                                                <button
+                                                    className={`${styles.icon__list__item} ${styles.red}`}
+                                                    onClick={() => delOrder(item.id)}
+                                                >
+                                                    <i className="fa-solid fa-trash"></i>
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className={styles.icon__list__item}
+                                                    onClick={() => {
+                                                        setModal(true)
+                                                        addOrder(item)
+                                                    }}
+                                                >
+                                                    <i className="fa-solid fa-plus"></i>
+                                                </button>
+                                            )}
+                                        </td>
+                                        <td>{item.name}</td>
+                                        <td>{(item.quantity).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                        <td>{(item.price).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                        <td>{item.made_in}</td>
+                                        <td>{item.expiration}</td>
+                                        <td>{(item.in_box).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                        <td>{(item.ball).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                        <td className={styles.icon__list}>
+                                            <button className={styles.icon__list__item}>
                                                 <i className="fa-solid fa-ellipsis-vertical"></i>
                                             </button>
                                         </td>

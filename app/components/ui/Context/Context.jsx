@@ -3,10 +3,11 @@ const Context = createContext()
 
 function Provider({ children }) {
     const [url] = useState("http://localhost:3000/api")
+    const [order, setOrder] = useState([])
 
     const [checkNumber, setCheckNumber] = useState(() => {
         const storedCheckNumber = typeof window !== 'undefined' ? window.localStorage.getItem('checkNumber') : null;
-        return storedCheckNumber ? storedCheckNumber : 1; 
+        return storedCheckNumber ? storedCheckNumber : 1;
     });
 
     useEffect(() => {
@@ -16,7 +17,7 @@ function Provider({ children }) {
     }, [checkNumber]);
 
     return (
-        <Context.Provider value={{ url, checkNumber, setCheckNumber }}>
+        <Context.Provider value={{ url, checkNumber, setCheckNumber, order, setOrder }}>
             {children}
         </Context.Provider>
     )
