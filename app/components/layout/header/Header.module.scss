@@ -84,6 +84,11 @@
             align-items: center;
             gap: 5px;
             cursor: pointer;
+            transition: $transition;
+
+            &:hover {
+                transform: scale(0.95);
+            }
 
             i {
                 color: $gary;
@@ -114,6 +119,11 @@
             align-items: center;
             gap: 5px;
             cursor: pointer;
+            transition: $transition;
+
+            &:hover {
+                transform: scale(0.95);
+            }
 
             i {
                 color: $gary;

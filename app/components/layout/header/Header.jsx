@@ -106,10 +106,16 @@ const Header = () => {
                     </button>
                 </div>
                 <div className={styles.sidebar__bottom}>
-                    <Link href={'/profil'}>
-                        <i className="fa-regular fa-user"></i>
-                        Профил
-                    </Link>
+                    <div className={styles.sidebar__bottom__items}>
+                        <Link href={'/'}>
+                            <i className="fa-solid fa-house"></i>
+                            Асосий
+                        </Link>
+                        <Link href={'/profil'}>
+                            <i className="fa-regular fa-user"></i>
+                            Профил
+                        </Link>
+                    </div>
                     <div className={styles.sidebar__bottom__items}>
                         <button>
                             <i className="fa-solid fa-rotate-left"></i>
