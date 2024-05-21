@@ -79,11 +79,16 @@
                         }
                     }
 
+                    thead {
+                        background-color: $aqua;
+                    }
+
                     tbody {
+                        background-color: $white;
 
                         tr {
                             &:hover {
-                                background-color: #ECECEC;
+                                background-color: $green;
                             }
 
                             .icon__list {

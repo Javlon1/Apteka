@@ -4,10 +4,28 @@ import { Context } from '../../ui/Context/Context';
 import Image from 'next/image';
 import logo from '../../../../public/img/logo.png'
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const Header = () => {
     const { close, setClose } = useContext(Context);
     const [dateTime, setDateTime] = useState(new Date());
+    const { pathname } = useRouter();
+
+    const [headerData] = useState([
+        {
+            id: 1,
+            link: '/',
+            nav: 'Асосий',
+            icon: "fa-solid fa-house"
+        },
+        {
+            id: 2,
+            link: '/profil',
+            nav: 'Профил',
+            icon: "fa-regular fa-user"
+
+        },
+    ]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -107,14 +125,20 @@ const Header = () => {
                 </div>
                 <div className={styles.sidebar__bottom}>
                     <div className={styles.sidebar__bottom__items}>
-                        <Link href={'/'}>
-                            <i className="fa-solid fa-house"></i>
-                            Асосий
-                        </Link>
-                        <Link href={'/profil'}>
-                            <i className="fa-regular fa-user"></i>
-                            Профил
-                        </Link>
+                        {
+                            headerData?.map((item) => (
+                                <Link
+                                    key={item.id}
+                                    className={`${pathname === item.link ? styles.active : ""}`}
+                                    href={item.link}
+                                >
+                                    <i className={item.icon}></i>
+                                    <p>
+                                        {item.nav}
+                                    </p>
+                                </Link>
+                            ))
+                        }
                     </div>
                     <div className={styles.sidebar__bottom__items}>
                         <button>
