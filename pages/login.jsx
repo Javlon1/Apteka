@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Head from 'next/head'
-import LoginIntro from '@/app/components/screens/login/login';
+import LoginIntro from '@/app/components/screens/login/Login';
 
 const Login = () => {
 
