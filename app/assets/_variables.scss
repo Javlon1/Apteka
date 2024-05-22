@@ -27,6 +27,11 @@ $shadow: 0px 4px 4px 0px #00000040;
     }
 }
 
+@mixin scale {
+    transition: $transition;
+    transform: scale(.95);
+}
+
 @mixin skeleton {
 
     border-radius: 5px;

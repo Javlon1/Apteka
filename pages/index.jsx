@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Head from 'next/head'
-import Intro from '@/app/components/screens/home/Intro/Intro';
+import Intro from '@/app/components/screens/home/Intro';
 
 const Index = () => {
 
