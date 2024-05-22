@@ -301,6 +301,7 @@ const Intro = () => {
 
     // Order Start
     const [totalPrice, setTotalPrice] = useState(0);
+    const [addItem, setAddItem] = useState([]);
 
     const addOrder = (item) => {
         const newOrder = [...new Set([...order, item])];
@@ -337,9 +338,9 @@ const Intro = () => {
                         <b>BERLIN - XEMI, GERMANIYA</b>
                     </div>
                     <div className={styles.modal__body__center}>
-                        <div>
-                            <div>
-                                <div>
+                        <div className={styles.modal__body__center__left}>
+                            <div className={styles.modal__body__center__left__top}>
+                                <div className={styles.modal__body__center__left__top__left}>
                                     <span>
                                         <p>Серияси</p>
                                         <input type="text" />
@@ -349,43 +350,48 @@ const Intro = () => {
                                         <input type="text" />
                                     </span>
                                 </div>
-                                <span>
+                                <span className={styles.modal__body__center__left__top__right}>
                                     <p>Нархи</p>
                                     <input type="text" />
                                 </span>
                             </div>
-                            <span>
+                            <span className={styles.modal__body__center__left__bottom}>
                                 <p>ҚолдиҚ</p>
                                 <input type="text" />
                             </span>
                         </div>
-                        <div>
-                            <div>
+                        <div className={styles.modal__body__center__right}>
+                            <div className={styles.modal__body__center__right__left}>
                                 <input type="text" />
                                 <div>
                                     <input type="text" />
                                     <input type="text" />
                                 </div>
                             </div>
-                            <div>
+                            <div className={styles.modal__body__center__right__right}>
                                 <input type="text" />
                             </div>
                         </div>
                     </div>
                     <div className={styles.modal__body__footer}>
-                        <div>
+                        <div className={styles.modal__body__footer__top}>
                             <p>тасдиҚлаш</p>
-                            <button onClick={() => { }}>
+                            <button onClick={() => {
+                                addOrder(addItem)
+                                setModal(false)
+                            }}>
                                 <i className="fa-solid fa-check"></i>
                             </button>
-                            <button>
+                            <button onClick={() => { setModal(false) }}>
                                 <i className="fa-solid fa-x"></i>
                             </button>
                         </div>
-                        <div>
+                        <div className={styles.modal__body__footer__bottom}>
                             <b>BERLIN- XEMI GERMANIYA</b>
-                            <span></span>
-                            <span></span>
+                            <div>
+                                <span>8</span>
+                                <span>25 000,00</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -531,7 +537,7 @@ const Intro = () => {
                                                     className={styles.icon__list__item}
                                                     onClick={() => {
                                                         setModal(true)
-                                                        addOrder(item)
+                                                        setAddItem(item)
                                                     }}
                                                 >
                                                     <i className="fa-solid fa-plus"></i>
