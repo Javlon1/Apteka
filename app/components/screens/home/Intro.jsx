@@ -469,10 +469,14 @@ const Intro = () => {
                             <b>{(totalPrice).toLocaleString('en-US').replace(/,/g, ' ')}</b>
                         </div>
                     </div>
-                    <button onClick={() => { setOrder([]) }} className={styles.intro__center__right__btn}>
-                        <i className="fa-solid fa-xmark"></i>
-                        Чекни ёпиш
-                    </button>
+                    {
+                        (order.length > 0) && (
+                            <button onClick={() => { setOrder([]) }} className={styles.intro__center__right__btn}>
+                                <i className="fa-solid fa-xmark"></i>
+                                Чекни ёпиш
+                            </button>
+                        )
+                    }
                 </div>
             </div>
 
