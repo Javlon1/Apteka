@@ -9,8 +9,8 @@ const data = [
         name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
         quantity: 20,
         price: 23000,
-        made_in: "Узбекистан",
-        expiration: "20.04.2026",
+        made_in: "Узбекиjстан",
+        expiration: "30.05.2024",
         in_box: 20,
         ball: 2000
     },
@@ -20,7 +20,7 @@ const data = [
         quantity: 20,
         price: 23000,
         made_in: "Узбекистан",
-        expiration: "21.04.2026",
+        expiration: "21.04.2024",
         in_box: 20,
         ball: 2000
     },
@@ -30,7 +30,7 @@ const data = [
         quantity: 20,
         price: 23000,
         made_in: "Узбекистан",
-        expiration: "22.04.2026",
+        expiration: "09.06.2024",
         in_box: 20,
         ball: 2000
     },
@@ -319,6 +319,23 @@ const Intro = () => {
     }, [order]);
     // Order End
 
+    const getBackgroundColor = (expiration) => {
+        const today = new Date();
+        const [day, month, year] = expiration.split('.').map(Number);
+        const expDate = new Date(year, month - 1, day);
+        const timeDiff = expDate.getTime() - today.getTime();
+        const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+        if (dayDiff <= 2) {
+            return styles.red;
+        } else if (dayDiff <= 7) {
+            return styles.yellow;
+        } else if (dayDiff <= 15) {
+            return styles.green;
+        } else {
+            return '';
+        }
+    };
 
 
     return (
@@ -423,25 +440,28 @@ const Intro = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {order.map((item, key) => (
-                                    <tr key={key} className={key % 2 === 0 ? styles.tableBc : ""}>
-                                        <td className={styles.icon__list}>
-                                            <button
-                                                className={`${styles.icon__list__item} ${styles.red}`}
-                                                onClick={() => {
-                                                    delOrder(item.id);
-                                                }}
-                                            >
-                                                <i className="fa-solid fa-trash"></i>
-                                            </button>
-                                        </td>
-                                        <td>{item.name}</td>
-                                        <td>{(item.quantity).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                        <td>{(item.price).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                        <td>{item.expiration}</td>
-                                        <td>{(item.in_box).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                    </tr>
-                                ))}
+                                {order.map((item, key) => {
+                                    const bgColor = getBackgroundColor(item.expiration);
+                                    return (
+                                        <tr key={key} className={bgColor}>
+                                            <td className={styles.icon__list}>
+                                                <button
+                                                    className={`${styles.icon__list__item} ${styles.red}`}
+                                                    onClick={() => {
+                                                        delOrder(item.id);
+                                                    }}
+                                                >
+                                                    <i className="fa-solid fa-trash"></i>
+                                                </button>
+                                            </td>
+                                            <td>{item.name}</td>
+                                            <td>{(item.quantity).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>{(item.price).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>{item.expiration}</td>
+                                            <td>{(item.in_box).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                        </tr>
+                                    )
+                                })}
                             </tbody>
                         </table>
                     </div>
@@ -526,42 +546,45 @@ const Intro = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentData.map((item, key) => (
-                                    <tr key={key} className={order.includes(item) ? styles.green : key % 2 === 0 ? styles.tableBc : ""}>
-                                        <td className={styles.icon__list}>
-                                            {order.includes(item) ? (
-                                                <button
-                                                    className={`${styles.icon__list__item} ${styles.red}`}
-                                                    onClick={() => delOrder(item.id)}
-                                                >
-                                                    <i className="fa-solid fa-trash"></i>
+                                {currentData.map((item, key) => {
+                                    const bgColor = getBackgroundColor(item.expiration);
+                                    return (
+                                        <tr key={key} className={bgColor}>
+                                            <td className={styles.icon__list}>
+                                                {order.includes(item) ? (
+                                                    <button
+                                                        className={`${styles.icon__list__item} ${styles.red}`}
+                                                        onClick={() => delOrder(item.id)}
+                                                    >
+                                                        <i className="fa-solid fa-trash"></i>
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        className={styles.icon__list__item}
+                                                        onClick={() => {
+                                                            setModal(true)
+                                                            setAddItem(item)
+                                                        }}
+                                                    >
+                                                        <i className="fa-solid fa-plus"></i>
+                                                    </button>
+                                                )}
+                                            </td>
+                                            <td>{item.name}</td>
+                                            <td>{(item.quantity).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>{(item.price).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>{item.made_in}</td>
+                                            <td>{item.expiration}</td>
+                                            <td>{(item.in_box).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>{(item.ball).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td className={styles.icon__list}>
+                                                <button className={styles.icon__list__item}>
+                                                    <i className="fa-solid fa-ellipsis-vertical"></i>
                                                 </button>
-                                            ) : (
-                                                <button
-                                                    className={styles.icon__list__item}
-                                                    onClick={() => {
-                                                        setModal(true)
-                                                        setAddItem(item)
-                                                    }}
-                                                >
-                                                    <i className="fa-solid fa-plus"></i>
-                                                </button>
-                                            )}
-                                        </td>
-                                        <td>{item.name}</td>
-                                        <td>{(item.quantity).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                        <td>{(item.price).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                        <td>{item.made_in}</td>
-                                        <td>{item.expiration}</td>
-                                        <td>{(item.in_box).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                        <td>{(item.ball).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                        <td className={styles.icon__list}>
-                                            <button className={styles.icon__list__item}>
-                                                <i className="fa-solid fa-ellipsis-vertical"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
                             </tbody>
                         </table>
 

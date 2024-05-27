@@ -326,9 +326,9 @@
                         background-color: $white;
 
                         tr {
-                            &:hover {
-                                background-color: $green;
-                            }
+                            // &:hover {
+                            //      : $green;
+                            // }
 
                             .icon__list {
                                 display: flex;
@@ -644,4 +644,8 @@
 
 .actModal {
     display: block !important;
+}
+
+.yellow {
+    background-color: yellow !important;
 }

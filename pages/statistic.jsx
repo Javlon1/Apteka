@@ -1,7 +1,8 @@
 import * as React from 'react'
 import Head from 'next/head'
+import StatisticIntro from '@/app/components/screens/Admin/statistic/StatisticIntro';
 
-const Projects = () => {
+const Statistic = () => {
 
     return (
         <>
@@ -12,7 +13,7 @@ const Projects = () => {
                 <meta name="keywords" content="" /> // ключевые слова, страницы
                 <meta name="image_src" content="" /> // URL для img
 
-                <meta property="og:title" content="Projects" /> // Название страницы
+                <meta property="og:title" content="Statistic" /> // Название страницы
                 <meta property="og:description" content="" /> // Описание страницы
                 <meta property="og:image" content="" /> // URL для img: https://example.com/image.jpg
                 <meta property="og:url" content="" /> // оснавное URL: https://example.com/page-url
@@ -20,14 +21,11 @@ const Projects = () => {
                 <meta property="og:site_name" content="" /> // Название сайта
                 <meta property="og:locale" content="ru_RU" />
 
-                <title>Projects</title>
+                <title>Admin - Statistika</title>
             </Head>
-
-            <main>
-                <h1>Projects</h1>
-            </main>
+            <StatisticIntro />
         </>
     )
 }
 
-export default Projects;
+export default Statistic;
