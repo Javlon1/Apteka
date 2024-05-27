@@ -2,12 +2,197 @@
 
 .statisticIntro {
     margin-top: 50px;
-    background-color: $red;
+    background-color: $white;
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1rem;
     flex: 1;
-    margin-right: 11rem;
     padding: 0 1rem;
+
+    &__header {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        margin-right: $right;
+
+        &__left {
+            &__list {
+                display: flex;
+
+                &__item {
+                    border: 1px solid #D0D5DD;
+                    padding: 10px 1rem;
+                    transition: $transition;
+                    cursor: pointer;
+
+                    &:hover {
+                        border: 1px solid #4256B9;
+                        background: #4256B9;
+                        color: $white ;
+                    }
+
+                    &:first-child {
+                        border-top-left-radius: 1rem;
+                        border-bottom-left-radius: 1rem;
+                    }
+
+                    &:last-child {
+                        border-top-right-radius: 1rem;
+                        border-bottom-right-radius: 1rem;
+                    }
+                }
+            }
+        }
+
+        &__right {
+            &__list {
+                display: flex;
+                gap: 20px;
+
+                &__item {
+                    padding: 8px 2rem;
+                    border: 1px solid #00000033;
+                    transition: $transition;
+                    cursor: pointer;
+
+                    &:hover {
+                        border: 1px solid #4256B9;
+                        background: #4256B9;
+                        color: $white ;
+                    }
+                }
+            }
+        }
+    }
+
+    &__body {
+        margin-top: 20px;
+        display: flex;
+
+        &__left {
+            width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+
+            &__top {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                flex-wrap: wrap;
+
+                &__chart {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                    box-shadow: 0px 4px 4px 0px #00000040;
+                    border-radius: 1rem;
+                    padding: 10px;
+
+                    .name {
+                        font-size: $xs;
+                        color: $black;
+                    }
+
+                    b {
+                        font-size: $xx;
+                        font-weight: 600;
+                        color: #34B53A;
+                    }
+
+                    p {
+                        font-size: $xs;
+                        color: #34B53A;
+                    }
+
+                    &:nth-child(2) {
+                        b {
+                            color: #02A0FC;
+                        }
+                    }
+
+                    &:nth-child(3) {
+                        b {
+                            color: #4339F2;
+                        }
+                    }
+
+                    &:nth-child(4) {
+                        b {
+                            color: #FFB200;
+                        }
+                    }
+                }
+            }
+
+            &__bottom {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 20px;
+                box-shadow: 0px 4px 4px 0px #00000040;
+                border-radius: 1rem;
+                padding: 10px;
+
+                &__header {
+                    display: flex;
+                    justify-content: space-between;
+
+                    ul {
+                        display: flex;
+                        gap: 20px;
+
+                        p {
+                            font-size: $xs;
+                        }
+
+                        li {
+                            display: flex;
+                            align-items: center;
+                            gap: 5px;
+
+                            b {
+                                width: 10px;
+                                height: 10px;
+                                border-radius: 50%;
+                                background-color: #FF3A29;
+                            }
+
+                            &:nth-child(2) {
+                                b{
+                                    background-color: #4339F2;
+                                }
+                            }
+
+                            &:nth-child(3) {
+                                b{
+                                    background-color: #FFB200;
+                                }
+                            }
+
+                            p {
+                                font-size: 14px;
+                            }
+                        }
+                    }
+                }
+
+                .chart {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
+                    font-size: 14px;
+                    color: $gary;
+                }
+            }
+        }
+    }
+}
+
+.act {
+    border: 1px solid #4256B9;
+    background: #4256B9;
+    color: $white ;
 }
