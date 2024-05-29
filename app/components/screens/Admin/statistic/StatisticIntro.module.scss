@@ -295,6 +295,8 @@
                 display: flex;
                 flex-direction: column;
                 gap: 20px;
+                overflow-y: scroll;
+                height: 40vh;
 
                 &__header {
                     height: 50px;
@@ -391,6 +393,12 @@
             }
 
             &__bottom {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                overflow-y: scroll;
+                height: 40vh;
+
                 &__header {
                     height: 50px;
                     display: flex;
@@ -422,7 +430,6 @@
                 }
 
                 &__table {
-                    margin-top: 1rem;
                     display: flex;
                     flex-direction: column;
                     flex: 1;

@@ -43,6 +43,55 @@ const dataTable = [
         price: 23000,
         share: "Узбекистан",
     },
+    {
+        id: 5,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        share: "Узбекистан",
+    },
+    {
+        id: 5,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        share: "Узбекистан",
+    },
+    {
+        id: 5,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        share: "Узбекистан",
+    },
+    {
+        id: 5,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        share: "Узбекистан",
+    },
+    {
+        id: 5,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        share: "Узбекистан",
+    },
+    {
+        id: 5,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        share: "Узбекистан",
+    },
+    {
+        id: 5,
+        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
+        quantity: 20,
+        price: 23000,
+        share: "Узбекистан",
+    },
 ]
 
 const StatisticIntro = () => {
