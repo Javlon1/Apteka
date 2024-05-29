@@ -10,6 +10,100 @@
     flex: 1;
     padding: 0 1rem;
 
+    .modalOpacity {
+        min-width: 100%;
+        min-height: 100%;
+        position: fixed;
+        background-color: $black;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 9999;
+        opacity: .5;
+        display: none;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        background-color: #fff;
+        margin: 0 auto;
+        top: 10%;
+        left: 0;
+        right: 0;
+        width: 400px;
+        padding: .5rem;
+        border-radius: $radius;
+        box-shadow: 0px 4px 4px 0px #00000040;
+
+        &__header {
+            display: flex;
+            align-items: center;
+            justify-content: end;
+
+            p {
+                width: 30px;
+                height: 30px;
+                font-size: $xl;
+                color: $gary;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        &__body {
+            border-radius: $radius;
+            padding-left: .5rem;
+
+            form {
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                gap: 20px;
+
+                label {
+                    width: 100%;
+
+                    p {
+                        font-size: $xs;
+                        color: $gary;
+                    }
+
+                    input {
+                        width: 100%;
+                        border: 1px solid #00000040;
+                        height: 30px;
+                    }
+                }
+
+                button {
+                    margin: 1rem 0;
+                    cursor: pointer;
+                    height: 45px;
+                    width: 150px;
+                    font-size: $xs;
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: $radius;
+                    border: 0;
+                    font-weight: 500;
+                    background-color: #D9D9D9;
+
+                    i {
+                        font-size: $xl;
+                        color: $gary;
+                    }
+                }
+            }
+        }
+    }
+
+
     &__header {
         margin-top: 10px;
         display: flex;
@@ -69,6 +163,7 @@
     &__body {
         margin-top: 20px;
         display: flex;
+        gap: 50px;
 
         &__left {
             width: 500px;
@@ -160,13 +255,13 @@
                             }
 
                             &:nth-child(2) {
-                                b{
+                                b {
                                     background-color: #4339F2;
                                 }
                             }
 
                             &:nth-child(3) {
-                                b{
+                                b {
                                     background-color: #FFB200;
                                 }
                             }
@@ -188,6 +283,226 @@
                 }
             }
         }
+
+        &__right {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            flex: 1;
+            margin-right: $right;
+
+            &__top {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+
+                &__header {
+                    height: 50px;
+                    display: flex;
+                    align-items: center;
+
+                    p {
+                        color: $black;
+                        font-size: $xl;
+                        font-weight: 500;
+                    }
+                }
+
+
+                &__table {
+                    display: flex;
+                    flex-direction: column;
+                    flex: 1;
+                    width: 100%;
+                    overflow-x: scroll;
+
+                    table {
+                        width: 100%;
+                        background-color: #EAECF0;
+
+                        tr {
+
+                            th,
+                            td {
+                                padding: .5rem;
+                                text-align: start;
+                                height: 40px;
+                            }
+
+                            th {
+                                font-size: 12px;
+                                color: $gary;
+                            }
+                        }
+
+                        thead {
+                            background-color: $aqua;
+                        }
+
+                        tbody {
+                            background-color: $white;
+
+                            tr {
+
+                                .icon__list {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 15px;
+
+                                    &__item {
+                                        width: 30px;
+                                        height: 30px;
+                                        border: 0;
+                                        background-color: transparent;
+                                        cursor: pointer;
+                                        color: $white;
+                                        font-size: .8rem;
+                                        border-radius: 5px;
+                                        transition: all .3s;
+
+                                        &:hover {
+                                            transform: scale(0.9);
+                                        }
+
+                                        &:nth-child(1) {
+                                            background-color: $blue;
+                                        }
+
+                                        &:nth-child(2) {
+                                            background-color: $green;
+                                        }
+
+                                        &:nth-child(3) {
+                                            background-color: $red;
+                                        }
+                                    }
+                                }
+                            }
+
+                            .skeleton__list {
+                                &__item {
+                                    @include skeleton
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &__bottom {
+                &__header {
+                    height: 50px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    p {
+                        color: $black;
+                        font-size: $xl;
+                        font-weight: 500;
+                    }
+
+                    button {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        padding: .4rem 2.5rem;
+                        border-radius: $radius;
+                        border: 0;
+                        box-shadow: $shadow;
+                        background-color: $white;
+                        font-size: $xs;
+                        cursor: pointer;
+
+                        &:hover {
+                            @include scale
+                        }
+                    }
+                }
+
+                &__table {
+                    margin-top: 1rem;
+                    display: flex;
+                    flex-direction: column;
+                    flex: 1;
+                    width: 100%;
+                    overflow-x: scroll;
+
+                    table {
+                        width: 100%;
+                        background-color: #EAECF0;
+
+                        tr {
+
+                            th,
+                            td {
+                                padding: .5rem;
+                                text-align: start;
+                                height: 40px;
+                            }
+
+                            th {
+                                font-size: 12px;
+                                color: $gary;
+                            }
+                        }
+
+                        thead {
+                            background-color: $aqua;
+                        }
+
+                        tbody {
+                            background-color: $white;
+
+                            tr {
+
+                                .icon__list {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 15px;
+
+                                    &__item {
+                                        width: 30px;
+                                        height: 30px;
+                                        border: 0;
+                                        background-color: transparent;
+                                        cursor: pointer;
+                                        color: $white;
+                                        font-size: .8rem;
+                                        border-radius: 5px;
+                                        transition: all .3s;
+
+                                        &:hover {
+                                            transform: scale(0.9);
+                                        }
+
+                                        &:nth-child(1) {
+                                            background-color: $blue;
+                                        }
+
+                                        &:nth-child(2) {
+                                            background-color: $green;
+                                        }
+
+                                        &:nth-child(3) {
+                                            background-color: $red;
+                                        }
+                                    }
+                                }
+                            }
+
+                            .skeleton__list {
+                                &__item {
+                                    @include skeleton
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -195,4 +510,8 @@
     border: 1px solid #4256B9;
     background: #4256B9;
     color: $white ;
+}
+
+.actModal {
+    display: block !important;
 }
