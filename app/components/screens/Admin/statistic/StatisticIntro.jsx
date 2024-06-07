@@ -5,6 +5,7 @@ import styles from './StatisticIntro.module.scss'
 import { Context } from '@/app/components/ui/Context/Context';
 import PieChart from '@/app/components/ui/PieChart/PieChart';
 import chart from "../../../../../public/img/chart.png"
+import { useRouter } from 'next/router';
 
 
 const dataTable = [
@@ -100,27 +101,45 @@ const StatisticIntro = () => {
     const [activeRight, setActiveRight] = React.useState('Бугун');
     const [modal, setModal] = React.useState(false)
 
+    const router = useRouter()
+
     // Функции для левого списка
     const leftFunctions = [
         {
             label: 'Статистика',
-            action: () => console.log('Функция для Статистики')
+            action: () => {
+                router.push('/statistic')
+            }
         },
         {
             label: 'Ҳисобот',
-            action: () => console.log('Функция для Ҳисобота')
+            action: () => {
+                router.push('/ew')
+            }
         },
         {
             label: 'Товар кирими',
-            action: () => console.log('Функция для Товара кирими')
+            action: () => {
+                router.push('/product')
+            }
         },
         {
             label: 'Чакана савдо',
-            action: () => console.log('Функция для Чакана савдо')
+            action: () => {
+                router.push('/chakana-savdo')
+            }
         },
         {
             label: 'Ишчилар',
-            action: () => console.log('Функция для Ишчилара')
+            action: () => {
+                router.push('/workers')
+            }
+        },
+        {
+            label: 'Созламалар',
+            action: () => {
+                router.push('/ew')
+            }
         }
     ];
 

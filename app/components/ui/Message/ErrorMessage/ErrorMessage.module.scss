@@ -1,0 +1,20 @@
+@import "../../../../assets/variables";
+
+.errorMessage {
+    position: fixed;
+    background-color: $red;
+    padding: .4rem 1rem;
+    border-radius: 5px;
+    top: 5rem;
+    right: -100rem;
+    color: $white;
+    font-weight: 500;
+    transition: all .3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.errorAct {
+    right: 1rem !important;
+}
