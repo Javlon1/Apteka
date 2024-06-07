@@ -22,7 +22,7 @@ const AddProduct = () => {
         {
             label: 'Ҳисобот',
             action: () => {
-                router.push('/ew')
+                router.push('/report')
             }
         },
         {
