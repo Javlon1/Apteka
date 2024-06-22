@@ -94,7 +94,7 @@ const WorkersInrto = () => {
         {
             label: 'Созламалар',
             action: () => {
-                router.push('/ew')
+                router.push('/settings')
             }
         }
     ];
