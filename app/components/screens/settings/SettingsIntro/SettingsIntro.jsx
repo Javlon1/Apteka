@@ -389,6 +389,7 @@ const SettingsIntro = () => {
                     </div>
                 </div>
 
+
             </div>
         </section>
     )
