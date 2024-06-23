@@ -52,9 +52,13 @@ const dataTable = [
 ]
 
 const SettingsIntro = () => {
-    const { setError } = React.useContext(Context);
+    const { setError, auth_token, url } = React.useContext(Context);
     const [activeLeft, setActiveLeft] = React.useState('Созламалар');
     const [activeRight, setActiveRight] = React.useState('Бугун');
+    const [dataShifts, setDataShifts] = React.useState([])
+    const [de, setDe] = React.useState(false)
+    const [dataChart, setDataChart] = React.useState([])
+    const [modal, setModal] = React.useState(false)
 
     // Error Start
     const [errorDate, setErrorDate] = React.useState('')
@@ -91,7 +95,7 @@ const SettingsIntro = () => {
         {
             label: 'Ишчилар',
             action: () => {
-                router.push('/settingsIntro')
+                router.push('/workers')
             }
         },
         {
@@ -146,6 +150,26 @@ const SettingsIntro = () => {
     };
 
 
+    const [formDataWor, setFormDataWor] = React.useState({
+        name: '',
+        last_name: '',
+        birthDate: '',
+        phone: '',
+        address: '',
+        shift: 1,
+        username: '',
+        password: ''
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormDataWor({
+            ...formDataWor,
+            [name]: value
+        });
+    };
+
+
     const data = [30, 30, 30];
     const colors = ['#FF3A29', '#4339F2', '#FFB200',];
 
@@ -173,6 +197,7 @@ const SettingsIntro = () => {
         logoFile: null,
         phoneNumber: '',
         address: '',
+        shiftId: 1
     });
 
 
@@ -191,21 +216,267 @@ const SettingsIntro = () => {
         });
     };
 
+
+    ///// get statistics Start
+    React.useEffect(() => {
+        const fullUrl = `${url}/admin/statistics/`;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+                    setDataChart(data)
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        fetchData();
+    }, [de]);
+    ///// get statistics End
+
+    ///// get shifts Start
+    React.useEffect(() => {
+        const fullUrl = `${url}/admin/shifts/`;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+                    setDataShifts(data)
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        fetchData();
+    }, [de]);
+    ///// get shifts End
+
     const handleGeneralSettingsSubmit = async (event) => {
         event.preventDefault();
+
         console.log(formData);
+
+        const fullUrl = `${url}/admin/check-layout/`;
+
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+                body: JSON.stringify({
+                    name: formData.organizationName,
+                    logo: formData.logoFile,
+                    image: formData.logoFile,
+                    phone: formData.phoneNumber,
+                    address: formData.address,
+                    shift_id: formData.shiftId,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.message) {
+                setFormData({
+                    organizationName: '',
+                    logoFile: null,
+                    phoneNumber: '',
+                    address: '',
+                    shiftId: 1
+                })
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
     };
 
     const handleAddShiftSubmit = async (event) => {
         event.preventDefault();
-        console.log(shiftFormData);
+
+        const fullUrl = `${url}/admin/shift/add/`;
+
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+                body: JSON.stringify({
+                    name: shiftFormData.shiftName,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.message) {
+                setDe(!de)
+                setShiftFormData({
+                    shiftName: ''
+                })
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
     };
+
+    ///// post Cource Start
+    const handleSubmitPost = async (e) => {
+        e.preventDefault();
+
+        const fullUrl = `${url}/admin/create_user`;
+
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+                body: JSON.stringify({
+                    username: formDataWor.username,
+                    hashed_password: formDataWor.password,
+                    first_name: formDataWor.name,
+                    last_name: formDataWor.last_name,
+                    birth_date: formDataWor.birthDate,
+                    phone_number: formDataWor.phone,
+                    address: formDataWor.address,
+                    shift_id: formDataWor.shift,
+                    is_admin: false
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data) {
+                setFormDataWor({
+                    name: '',
+                    last_name: '',
+                    birthDate: '',
+                    phone: '',
+                    address: '',
+                    shift: 1,
+                    username: '',
+                    password: ''
+                })
+                setDe(!de)
+                setModal(false)
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
+    };
+    ///// post Cource End
 
 
 
     return (
         <section className={styles.settingsIntro}>
             <ErrorMessage errorText={errorDate} />
+
+
+            <div
+                className={`${styles.modalOpacity} ${modal ? styles.actModal : ""}`}
+                onClick={() => {
+                    setModal(false)
+                }}
+            ></div>
+
+            <div className={`${styles.modal} ${modal ? styles.actModal : ""}`}>
+
+                <div className={styles.modal__header}>
+                    <p onClick={() => setModal(false)}>
+                        <i className="fa-solid fa-x"></i>
+                    </p>
+                </div>
+
+                <div className={styles.modal__body}>
+                    <form onSubmit={handleSubmitPost}>
+                        <label htmlFor="username">
+                            <p>Логини:</p>
+                            <input type="text" id="username" name="username" value={formDataWor.username} onChange={handleChange} />
+                        </label>
+                        <label htmlFor="password">
+                            <p>Пароли:</p>
+                            <input type="text" id="password" name="password" value={formDataWor.password} onChange={handleChange} />
+                        </label>
+                        <label htmlFor="name">
+                            <p>Исм:</p>
+                            <input type="text" id="name" name="name" value={formDataWor.name} onChange={handleChange} />
+                        </label>
+                        <label htmlFor="last_name">
+                            <p>Фамилияси:</p>
+                            <input type="text" id="last_name" name="last_name" value={formDataWor.last_name} onChange={handleChange} />
+                        </label>
+
+                        <label htmlFor="birthDate">
+                            <p>Туғилган сана:</p>
+                            <input type="text" id="birthDate" name="birthDate" value={formDataWor.birthDate} onChange={handleChange} />
+                        </label>
+                        <label htmlFor="phone">
+                            <p>Телефон:</p>
+                            <input type="text" id="phone" name="phone" value={formDataWor.phone} onChange={handleChange} />
+                        </label>
+                        <label htmlFor="address">
+                            <p>Манзил:</p>
+                            <input type="text" id="address" name="address" value={formDataWor.address} onChange={handleChange} />
+                        </label>
+                        <label htmlFor="shift">
+                            <p>Смена:</p>
+                            <select id="shift" name="shift" value={formDataWor.shift} onChange={handleChange}>
+                                {
+                                    dataShifts?.map((item) => (
+                                        <option key={item.id} value={item.id}>{item.name}</option>
+                                    ))
+                                }
+                            </select>
+                        </label>
+
+                        <button type="submit">
+                            <i className="fa-solid fa-file-lines"></i>
+                            Сақлаш
+                        </button>
+                    </form>
+                </div>
+            </div>
+
             <div className={styles.settingsIntro__header}>
                 <div className={styles.settingsIntro__header__left}>
                     <ul className={styles.settingsIntro__header__left__list}>
@@ -225,7 +496,7 @@ const SettingsIntro = () => {
                 </div>
             </div>
 
-            <div className={styles.settingsIntro__center}>
+            {/* <div className={styles.settingsIntro__center}>
                 <div className={styles.settingsIntro__center__left}>
                     <Image
                         width={40}
@@ -271,7 +542,8 @@ const SettingsIntro = () => {
                         ))}
                     </ul>
                 </div>
-            </div>
+            </div> */}
+
             <div className={styles.settingsIntro__bottom}>
                 <div id="tableToExport" className={styles.settingsIntro__bottom__table}>
                     <div className={styles.settingsIntro__bottom__table__header}>
@@ -297,13 +569,13 @@ const SettingsIntro = () => {
                             </thead>
                             <tbody>
                                 {
-                                    dataTable.map((item, key) => (
+                                    dataChart.workers_table?.map((item, key) => (
                                         <tr key={key}>
-                                            <td>{item.name}</td>
-                                            <td>{(item.quantity).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                            <td>{(item.price).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                            <td>{item.share}</td>
-                                            <td>{item.share}</td>
+                                            <td>{item.worker}</td>
+                                            <td>{(item.user_sale_count)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>{(item.user_scores)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>{(item.user_salaries)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>{(item.user_bonus)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                         </tr>
                                     ))
                                 }
@@ -358,6 +630,22 @@ const SettingsIntro = () => {
                                     onChange={handleInputChange}
                                 />
                             </label>
+                            <label htmlFor="shiftId">
+                                <p>Смена:</p>
+                                <select
+                                    id="shiftId"
+                                    name="shiftId"
+                                    value={formData.shiftId}
+                                    onChange={handleInputChange}
+                                >
+                                    {
+                                        dataShifts?.map((item) => (
+                                            <option key={item.id} value={item.id}>{item.name}</option>
+                                        ))
+                                    }
+                                </select>
+                            </label>
+
 
                             <button type='submit'>
                                 Саклаш

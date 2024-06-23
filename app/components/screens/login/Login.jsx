@@ -41,8 +41,6 @@ const LoginIntro = () => {
 
             if (data) {
                 setAuth_token(data.access_token)
-                console.log(data);
-                console.log(activeUser);
 
                 if (data.is_admin && activeUser == 1) {
                     router.push('/statistic');

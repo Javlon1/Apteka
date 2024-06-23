@@ -305,15 +305,15 @@ const ChakanaSavdo = () => {
                                     <td>{item.sale_id}</td>
                                     <td>{item.date_added}</td>
                                     <td>чакана савдо</td>
-                                    <td>ж.ш</td>
+                                    <td>{item.person}</td>
                                     <td>{item.amount}</td>
                                     <td>{item.payment_type == "naqd" ? item.amount : 0}</td>
                                     <td>{item.payment_type == "card" ? item.amount : 0}</td>
                                     <td>{item.payment_type == "nasiya" ? item.amount : 0}</td>
                                     <td>{item.date_added}</td>
-                                    <td>КАССИР</td>
+                                    <td>{item.user_type}</td>
                                     <td>{item.shift_name}</td>
-                                    <td>{item.owner_name}</td>
+                                    <td>{item.owner_first_name} {item.owner_last_name}</td>
                                 </tr>
                             ))
                         }
