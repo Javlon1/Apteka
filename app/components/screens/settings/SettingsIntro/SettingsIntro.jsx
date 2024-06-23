@@ -197,7 +197,7 @@ const SettingsIntro = () => {
         logoFile: null,
         phoneNumber: '',
         address: '',
-        shiftId: 1
+        shiftId: 1,
     });
 
 
@@ -205,17 +205,16 @@ const SettingsIntro = () => {
         shiftName: ''
     });
 
+
+
     const handleInputChange = (e) => {
         const { name, value, files } = e.target;
-
         const newValue = name === 'logoFile' ? files[0] : value;
-
         setFormData({
             ...formData,
-            [name]: newValue
+            [name]: newValue,
         });
     };
-
 
     ///// get statistics Start
     React.useEffect(() => {
@@ -287,31 +286,34 @@ const SettingsIntro = () => {
     }, [de]);
     ///// get shifts End
 
+
     const handleGeneralSettingsSubmit = async (event) => {
         event.preventDefault();
-
-        console.log(formData);
-
         const fullUrl = `${url}/admin/check-layout/`;
+
+        const formDataToSend = new FormData();
+        formDataToSend.append('name', formData.organizationName);
+        formDataToSend.append('logo', formData.logoFile);
+        formDataToSend.append('image', formData.logoFile);
+        formDataToSend.append('phone', formData.phoneNumber);
+        formDataToSend.append('address', formData.address);
+        formDataToSend.append('shift_id', formData.shiftId);
 
         try {
             const response = await fetch(fullUrl, {
                 method: 'POST',
+                body: formDataToSend,
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth_token}`,
                 },
-                body: JSON.stringify({
-                    name: formData.organizationName,
-                    logo: formData.logoFile,
-                    image: formData.logoFile,
-                    phone: formData.phoneNumber,
-                    address: formData.address,
-                    shift_id: formData.shiftId,
-                }),
             });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
             const data = await response.json();
+            console.log(data);
 
             if (data.message) {
                 setFormData({
@@ -319,13 +321,14 @@ const SettingsIntro = () => {
                     logoFile: null,
                     phoneNumber: '',
                     address: '',
-                    shiftId: 1
-                })
+                    shiftId: 1,
+                });
             }
         } catch (error) {
             console.error('Error during POST request:', error);
         }
     };
+
 
     const handleAddShiftSubmit = async (event) => {
         event.preventDefault();
@@ -638,14 +641,11 @@ const SettingsIntro = () => {
                                     value={formData.shiftId}
                                     onChange={handleInputChange}
                                 >
-                                    {
-                                        dataShifts?.map((item) => (
-                                            <option key={item.id} value={item.id}>{item.name}</option>
-                                        ))
-                                    }
+                                    {dataShifts?.map((item) => (
+                                        <option key={item.id} value={item.id}>{item.name}</option>
+                                    ))}
                                 </select>
                             </label>
-
 
                             <button type='submit'>
                                 Саклаш
