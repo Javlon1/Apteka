@@ -3,13 +3,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import styles from './Login.module.scss'
 import { Context } from '@/app/components/ui/Context/Context';
+import { useRouter } from 'next/router';
 
 
 const LoginIntro = () => {
-    const { lan } = useContext(Context);
+    const { url, setAuth_token } = useContext(Context);
     const [activeUser, setActiveUser] = useState(0);
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
+    const router = useRouter();
 
     const handleUser = (index) => {
         setActiveUser(index);
@@ -18,13 +20,39 @@ const LoginIntro = () => {
     const handleLoginChange = (e) => setLogin(e.target.value);
     const handlePasswordChange = (e) => setPassword(e.target.value);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log({
-            userType: activeUser === 0 ? 'Сотувчи' : 'Админ',
-            login,
-            password
-        });
+
+        const fullUrl = `${url}/token/`;
+
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: login,
+                    password
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data) {
+                setAuth_token(data.access_token)
+                console.log(data);
+                console.log(activeUser);
+
+                if (data.is_admin && activeUser == 1) {
+                    router.push('/statistic');
+                } else if (!data.is_admin && activeUser == 0) {
+                    router.push('/')
+                }
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
     };
 
     const user = [

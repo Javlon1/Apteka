@@ -64,6 +64,8 @@
                 align-items: center;
                 flex-direction: column;
                 gap: 20px;
+                overflow-y: scroll;
+                height: 80vh;
 
                 label {
                     width: 100%;
@@ -73,6 +75,7 @@
                         color: $gary;
                     }
 
+                    select,
                     input {
                         width: 100%;
                         border: 1px solid #00000040;

@@ -52,9 +52,15 @@ const dataTable = [
 ]
 
 const ReportIntro = () => {
-    const { setError } = React.useContext(Context);
+    const { setError, auth_token, url } = React.useContext(Context);
     const [activeLeft, setActiveLeft] = React.useState('Ҳисобот');
-    const [activeRight, setActiveRight] = React.useState('Бугун');
+    const [activeRight, setActiveRight] = React.useState('Бу ойда');
+    const [dataChart, setDataChart] = React.useState([])
+    const [de, setDe] = React.useState(false)
+    const [date, setDate] = React.useState('thismonth')
+
+    const [startDate, setStartDate] = React.useState('');
+    const [endDate, setEndDate] = React.useState('');
 
     // Error Start
     const [errorDate, setErrorDate] = React.useState('')
@@ -106,24 +112,37 @@ const ReportIntro = () => {
     const rightFunctions = [
         {
             label: 'Бугун',
-            action: () => console.log('Функция для Бугуна')
+            action: () => {
+                setDate('today')
+                setStartDate('')
+                setEndDate('')
+            }
         },
         {
             label: 'Бу ҳафта',
-            action: () => console.log('Функция для Бу ҳафта')
+            action: () => {
+                setDate('thisweek')
+                setStartDate('')
+                setEndDate('')
+            }
         },
         {
             label: 'Бу ойда',
-            action: () => console.log('Функция для Бу ойда')
+            action: () => {
+                setDate('thismonth')
+                setStartDate('')
+                setEndDate('')
+            }
         },
         {
             label: 'Бу квартал',
-            action: () => console.log('Функция для Бу квартал')
+            action: () => {
+                setDate('thisquarter')
+                setStartDate('')
+                setEndDate('')
+            }
         }
     ];
-
-    const [startDate, setStartDate] = React.useState('');
-    const [endDate, setEndDate] = React.useState('');
 
     const handleStartDateChange = (e) => {
         const selectedStartDate = e.target.value;
@@ -146,13 +165,43 @@ const ReportIntro = () => {
     };
 
 
-    const data = [30, 30, 30];
     const colors = ['#FF3A29', '#4339F2', '#FFB200',];
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        console.log(startDate, '-', endDate);
+        ///// get statistics Start
+        const fullUrl = `${url}/admin/reports/?start_date=${startDate}&end_date=${endDate}`;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+                    setDataChart(data)
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        fetchData();
+        ///// get statistics End
     };
 
     const exportPDF = () => {
@@ -167,6 +216,43 @@ const ReportIntro = () => {
             pdf.save('table.pdf');
         });
     };
+
+    ///// get statistics Start
+    React.useEffect(() => {
+        const fullUrl = `${url}/admin/reports/?filter=${date}`;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+                    setDataChart(data)
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        fetchData();
+    }, [de, date]);
+    ///// get statistics End
+
+    const data = [dataChart.graph_data?.overall_sum_expense_current_month, dataChart.graph_data?.overall_sum_of_sale, dataChart.graph_data?.overall_sum_of_profit];
 
     return (
         <section className={styles.reportIntro}>
@@ -240,8 +326,8 @@ const ReportIntro = () => {
             <div className={styles.reportIntro__chart}>
                 <div className={styles.reportIntro__chart__item}>
                     <p className={styles.name}>Аптекада</p>
-                    <b>65,123,376</b>
-                    <p>+5%</p>
+                    <b>{dataChart.graph_data?.overall_sum_of_sale}</b>
+                    <p>+{dataChart.graph_data?.sales_percent_change}%</p>
                     <Image
                         src={chart}
                         alt='Chart'
@@ -250,8 +336,8 @@ const ReportIntro = () => {
                 </div>
                 <div className={styles.reportIntro__chart__item}>
                     <p className={styles.name}>Соф фойда</p>
-                    <b>15,123,376</b>
-                    <p>+8%</p>
+                    <b>{dataChart.graph_data?.overall_sum_of_profit}</b>
+                    <p>+{dataChart.graph_data?.profit_percent_change}%</p>
                     <Image
                         src={chart}
                         alt='Chart'
@@ -260,8 +346,8 @@ const ReportIntro = () => {
                 </div>
                 <div className={styles.reportIntro__chart__item}>
                     <p className={styles.name}>Насия савдо</p>
-                    <b>3,376</b>
-                    <p>+1%</p>
+                    <b>{dataChart.graph_data?.nasiya_savdo}</b>
+                    <p>+{dataChart.graph_data?.p}%</p>
                     <Image
                         src={chart}
                         alt='Chart'
@@ -270,8 +356,8 @@ const ReportIntro = () => {
                 </div>
                 <div className={styles.reportIntro__chart__item}>
                     <p className={styles.name}>Нақд савдо</p>
-                    <b>8.200.000</b>
-                    <p>+1%</p>
+                    <b>{dataChart.graph_data?.naqd_savdo}</b>
+                    <p>+{dataChart.graph_data?.p}%</p>
                     <Image
                         src={chart}
                         alt='Chart'
@@ -280,8 +366,8 @@ const ReportIntro = () => {
                 </div>
                 <div className={styles.reportIntro__chart__item}>
                     <p className={styles.name}>Сотувлар</p>
-                    <b>8.200.000</b>
-                    <p>+1%</p>
+                    <b>{dataChart.graph_data?.quantity_of_sales_current_month}</b>
+                    <p>+{dataChart.graph_data?.quantity_sales_percent_change}%</p>
                     <Image
                         src={chart}
                         alt='Chart'
@@ -290,8 +376,8 @@ const ReportIntro = () => {
                 </div>
                 <div className={styles.reportIntro__chart__item}>
                     <p className={styles.name}>Ишчилар маоши</p>
-                    <b>8.200.000</b>
-                    <p>+1%</p>
+                    <b>{dataChart.graph_data?.overall_sum_salaries_current_month}</b>
+                    <p>+{dataChart.graph_data?.salary_change_percent}%</p>
                     <Image
                         src={chart}
                         alt='Chart'
@@ -341,11 +427,11 @@ const ReportIntro = () => {
                             </thead>
                             <tbody>
                                 {
-                                    dataTable.map((item, key) => (
+                                    dataChart.table_data?.map((item, key) => (
                                         <tr key={key}>
-                                            <td>{item.name}</td>
-                                            <td>{(item.quantity).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                            <td>{(item.price).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>{item.product_name}</td>
+                                            <td>{(item.quantity_sold).toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>{(item.total_sales).toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                             <td>{item.share}</td>
                                         </tr>
                                     ))

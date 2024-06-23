@@ -7,9 +7,20 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const Header = () => {
-    const { close, setClose } = useContext(Context);
+    const { close, setClose, setAuth_token } = useContext(Context);
     const [dateTime, setDateTime] = useState(new Date());
     const { pathname } = useRouter();
+    const router = useRouter();
+
+
+    const logOut = () => {
+
+        window.localStorage.removeItem('auth_token');
+
+        setAuth_token("")
+
+        router.push('/login');
+    }
 
     const [headerData] = useState([
         {
@@ -20,10 +31,15 @@ const Header = () => {
         },
         {
             id: 2,
+            link: '/incom',
+            nav: 'Чиқим',
+            icon: "fa-regular fa-user"
+        },
+        {
+            id: 3,
             link: '/profil',
             nav: 'Профил',
             icon: "fa-regular fa-user"
-
         },
     ]);
 
@@ -145,7 +161,11 @@ const Header = () => {
                             <i className="fa-solid fa-rotate-left"></i>
                             Возврат
                         </button>
-                        <button>
+                        <button
+                            onClick={() => {
+                                logOut()
+                            }}
+                        >
                             <i className="fa-solid fa-arrow-right-from-bracket"></i>
                             Чиқиш
                         </button>

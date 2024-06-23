@@ -173,7 +173,6 @@ const SettingsIntro = () => {
         logoFile: null,
         phoneNumber: '',
         address: '',
-        shiftName: ''
     });
 
 
@@ -388,8 +387,6 @@ const SettingsIntro = () => {
                         </form>
                     </div>
                 </div>
-
-
             </div>
         </section>
     )

@@ -6,15 +6,16 @@ import { useRouter } from 'next/router';
 import Clipboard from '../../../../../public/img/Clipboard.png';
 
 const AddProduct = () => {
-    const { lan } = React.useContext(Context);
+    const { url, auth_token } = React.useContext(Context);
     const [activeLeft, setActiveLeft] = React.useState('Товар кирими');
+    const [dataType, setDataType] = React.useState([]);
 
     const router = useRouter()
 
     // Функции для левого списка
     const leftFunctions = [
         {
-            label: 'Статистика', 
+            label: 'Статистика',
             action: () => {
                 router.push('/statistic')
             }
@@ -66,8 +67,7 @@ const AddProduct = () => {
         discountPrice: '',
         labeling: '',
         amount: '',
-        vatRate: '',
-        vatPrice: ''
+        madeIn: ''
     });
 
     const handleChange = (e) => {
@@ -78,9 +78,97 @@ const AddProduct = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    ///// get shifts Start
+    React.useEffect(() => {
+        const fullUrl = `${url}/admin/category/`;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+                    setDataType(data)
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        fetchData();
+    }, []);
+    ///// get shifts End
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+
+        const fullUrl = `${url}/admin/product/create/`;
+
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+                body: JSON.stringify({
+                    name: formData.productName,
+                    type_id: parseInt(formData.productType),
+                    serial_number: formData.barcode,
+                    box: parseInt(formData.quantity),
+                    amount_in_box: parseInt(formData.boxes),
+                    amount_in_package: parseInt(formData.items),
+                    base_price: parseFloat(formData.basePrice),
+                    sale_price: parseFloat(formData.salePrice),
+                    extra_price_in_percent: parseInt(formData.margin),
+                    sale_price_in_percent: parseInt(formData.salePricePercentage),
+                    expiry_date: formData.discount,
+                    discount_price: parseFloat(formData.discountPrice),
+                    score: parseInt(formData.labeling),
+                    overall_price: parseFloat(formData.amount),
+                    produced_location: formData.madeIn,
+                }),
+            });
+
+            const data = await response.json();
+            
+
+            if (data.message) {
+                setFormData({
+                    productName: '',
+                    productType: '',
+                    barcode: '',
+                    quantity: '',
+                    boxes: '',
+                    items: '',
+                    basePrice: '',
+                    salePrice: '',
+                    margin: '',
+                    salePricePercentage: '',
+                    discount: '',
+                    discountPrice: '',
+                    labeling: '',
+                    amount: '',
+                    madeIn: ""
+                })
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
     };
 
     return (
@@ -113,6 +201,7 @@ const AddProduct = () => {
                             name="productName"
                             value={formData.productName}
                             onChange={handleChange}
+                            required
                         />
                         <div className={styles.addProduct__center__form__top__f}>
                             <Image width={40} height={40} src={Clipboard} alt="img" />
@@ -123,10 +212,13 @@ const AddProduct = () => {
                                     id="productType"
                                     value={formData.productType}
                                     onChange={handleChange}
+                                    required
                                 >
-                                    <option value="">Select Type</option>
-                                    <option value="type1">Type 1</option>
-                                    <option value="type2">Type 2</option>
+                                    {
+                                        dataType?.map((item) => (
+                                            <option key={item.id} value={item.id}>{item.name}</option>
+                                        ))
+                                    }
                                 </select>
                             </label>
                         </div>
@@ -139,6 +231,7 @@ const AddProduct = () => {
                                         id="barcode"
                                         value={formData.barcode}
                                         onChange={handleChange}
+                                        required
                                     >
                                         <option value="">Select Barcode</option>
                                         <option value="barcode1">Barcode 1</option>
@@ -159,6 +252,7 @@ const AddProduct = () => {
                                         type="text"
                                         value={formData.quantity}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </label>
                                 <input
@@ -167,6 +261,7 @@ const AddProduct = () => {
                                     type="text"
                                     value={formData.boxes}
                                     onChange={handleChange}
+                                    required
                                 />
                                 <input
                                     name="items"
@@ -174,6 +269,7 @@ const AddProduct = () => {
                                     type="text"
                                     value={formData.items}
                                     onChange={handleChange}
+                                    required
                                 />
                             </div>
                             <div className={styles.addProduct__center__form__top__list__item3}>
@@ -184,6 +280,7 @@ const AddProduct = () => {
                                         type="text"
                                         value={formData.basePrice}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </label>
                                 <label htmlFor="salePrice">
@@ -193,6 +290,7 @@ const AddProduct = () => {
                                         type="text"
                                         value={formData.salePrice}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </label>
                                 <label htmlFor="margin">
@@ -202,6 +300,7 @@ const AddProduct = () => {
                                         type="text"
                                         value={formData.margin}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </label>
                                 <label htmlFor="salePricePercentage">
@@ -211,15 +310,17 @@ const AddProduct = () => {
                                         type="text"
                                         value={formData.salePricePercentage}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </label>
                                 <label htmlFor="discount">
-                                    <p>Чегирма (%)</p>
+                                    <p>Я/Муддати</p>
                                     <input
                                         name="discount"
-                                        type="text"
+                                        type="date"
                                         value={formData.discount}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </label>
                                 <label htmlFor="discountPrice">
@@ -229,6 +330,7 @@ const AddProduct = () => {
                                         type="text"
                                         value={formData.discountPrice}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </label>
                             </div>
@@ -238,12 +340,13 @@ const AddProduct = () => {
                         <b className={styles.addProduct__center__form__bottom__title}>чакана савдo</b>
                         <div className={styles.addProduct__center__form__bottom__list}>
                             <label htmlFor="labeling">
-                                <p>Бегилаш</p>
+                                <p>Балл</p>
                                 <input
                                     name="labeling"
                                     type="text"
                                     value={formData.labeling}
                                     onChange={handleChange}
+                                    required
                                 />
                             </label>
                             <label htmlFor="amount">
@@ -253,29 +356,38 @@ const AddProduct = () => {
                                     type="text"
                                     value={formData.amount}
                                     onChange={handleChange}
+                                    required
                                 />
                             </label>
-                            <label htmlFor="vatRate">
-                                <p>НДС ставкаси</p>
+                            <label htmlFor="madeIn">
+                                <p>ишлаб чикарилган жойи</p>
                                 <input
-                                    name="vatRate"
+                                    name="madeIn"
                                     type="text"
-                                    value={formData.vatRate}
+                                    value={formData.madeIn}
                                     onChange={handleChange}
-                                />
-                            </label>
-                            <label htmlFor="vatPrice">
-                                <p>НДС Нархи</p>
-                                <input
-                                    name="vatPrice"
-                                    type="text"
-                                    value={formData.vatPrice}
-                                    onChange={handleChange}
+                                    required
                                 />
                             </label>
                         </div>
                         <div className={styles.addProduct__center__form__bottom__btn}>
-                            <b>
+                            <b onClick={() => setFormData({
+                                productName: '',
+                                productType: '',
+                                barcode: '',
+                                quantity: '',
+                                boxes: '',
+                                items: '',
+                                basePrice: '',
+                                salePrice: '',
+                                margin: '',
+                                salePricePercentage: '',
+                                discount: '',
+                                discountPrice: '',
+                                labeling: '',
+                                amount: '',
+                                madeIn: ''
+                            })}>
                                 <i className="fa-regular fa-trash-can"></i>
                                 Тозалаш
                             </b>
@@ -286,6 +398,7 @@ const AddProduct = () => {
                         </div>
                     </div>
                 </form>
+
             </div>
         </section>
     )

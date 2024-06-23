@@ -48,10 +48,13 @@ const dataTable = [
 ]
 
 const WorkersInrto = () => {
-    const { setError } = React.useContext(Context);
+    const { setError, url, auth_token } = React.useContext(Context);
     const [activeLeft, setActiveLeft] = React.useState('Ишчилар');
     const [activeRight, setActiveRight] = React.useState('Бугун');
     const [modal, setModal] = React.useState(false)
+    const [de, setDe] = React.useState(false)
+    const [dataChart, setDataChart] = React.useState([])
+    const [dataShifts, setDataShifts] = React.useState([])
 
     // Error Start
     const [errorDate, setErrorDate] = React.useState('')
@@ -162,12 +165,16 @@ const WorkersInrto = () => {
     };
 
 
+
     const [formData, setFormData] = React.useState({
         name: '',
+        last_name: '',
         birthDate: '',
         phone: '',
         address: '',
-        shift: ''
+        shift: 1,
+        username: '',
+        password: ''
     });
 
     const handleChange = (e) => {
@@ -178,10 +185,122 @@ const WorkersInrto = () => {
         });
     };
 
-    const handleSubmitPost = (e) => {
+    ///// get statistics Start
+    React.useEffect(() => {
+        const fullUrl = `${url}/admin/statistics/`;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+                    setDataChart(data)
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        fetchData();
+    }, [de]);
+    ///// get statistics End
+    ///// get shifts Start
+    React.useEffect(() => {
+        const fullUrl = `${url}/admin/shifts/`;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+                    setDataShifts(data)
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        fetchData();
+    }, [de]);
+    ///// get shifts End
+
+    ///// post Cource Start
+    const handleSubmitPost = async (e) => {
         e.preventDefault();
-        console.log('Submitted data:', formData);
+
+        const fullUrl = `${url}/admin/create_user`;
+
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+                body: JSON.stringify({
+                    username: formData.username,
+                    hashed_password: formData.password,
+                    first_name: formData.name,
+                    last_name: formData.last_name,
+                    birth_date: formData.birthDate,
+                    phone_number: formData.phone,
+                    address: formData.address,
+                    shift_id: formData.shift,
+                    is_admin: false
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data) {
+                setFormData({
+                    name: '',
+                    last_name: '',
+                    birthDate: '',
+                    phone: '',
+                    address: '',
+                    shift: 1,
+                    username: '',
+                    password: ''
+                })
+                setDe(!de)
+                setModal(false)
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
     };
+    ///// post Cource End
 
     return (
         <section className={styles.workers}>
@@ -204,10 +323,23 @@ const WorkersInrto = () => {
 
                 <div className={styles.modal__body}>
                     <form onSubmit={handleSubmitPost}>
+                        <label htmlFor="username">
+                            <p>Логини:</p>
+                            <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} />
+                        </label>
+                        <label htmlFor="password">
+                            <p>Пароли:</p>
+                            <input type="text" id="password" name="password" value={formData.password} onChange={handleChange} />
+                        </label>
                         <label htmlFor="name">
                             <p>Исм:</p>
                             <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} />
                         </label>
+                        <label htmlFor="last_name">
+                            <p>Фамилияси:</p>
+                            <input type="text" id="last_name" name="last_name" value={formData.last_name} onChange={handleChange} />
+                        </label>
+
                         <label htmlFor="birthDate">
                             <p>Туғилган сана:</p>
                             <input type="text" id="birthDate" name="birthDate" value={formData.birthDate} onChange={handleChange} />
@@ -222,7 +354,13 @@ const WorkersInrto = () => {
                         </label>
                         <label htmlFor="shift">
                             <p>Смена:</p>
-                            <input type="text" id="shift" name="shift" value={formData.shift} onChange={handleChange} />
+                            <select id="shift" name="shift" value={formData.shift} onChange={handleChange}>
+                                {
+                                    dataShifts?.map((item) => (
+                                        <option key={item.id} value={item.id}>{item.name}</option>
+                                    ))
+                                }
+                            </select>
                         </label>
 
                         <button type="submit">
@@ -251,7 +389,7 @@ const WorkersInrto = () => {
                 </div>
             </div>
 
-            <div className={styles.workers__center}>
+            {/* <div className={styles.workers__center}>
                 <div className={styles.workers__center__left}>
                     <Image
                         width={40}
@@ -297,7 +435,7 @@ const WorkersInrto = () => {
                         ))}
                     </ul>
                 </div>
-            </div>
+            </div> */}
 
             <div id="tableToExport" className={styles.workers__table}>
                 <div className={styles.workers__table__header}>
@@ -323,13 +461,13 @@ const WorkersInrto = () => {
                         </thead>
                         <tbody>
                             {
-                                dataTable.map((item, key) => (
+                                dataChart.workers_table?.map((item, key) => (
                                     <tr key={key}>
-                                        <td>{item.name}</td>
-                                        <td>{(item.quantity).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                        <td>{(item.price).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                        <td>{item.share}</td>
-                                        <td>{item.share}</td>
+                                        <td>{item.worker}</td>
+                                        <td>{(item.user_sale_count)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                        <td>{(item.user_scores)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                        <td>{(item.user_salaries)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                        <td>{(item.user_bonus)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                     </tr>
                                 ))
                             }

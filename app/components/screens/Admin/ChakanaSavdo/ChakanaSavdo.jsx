@@ -10,9 +10,11 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 const ChakanaSavdo = () => {
-    const { setError } = React.useContext(Context);
+    const { setError, auth_token, url } = React.useContext(Context);
     const [activeLeft, setActiveLeft] = React.useState('Чакана савдо');
-    const [activeRight, setActiveRight] = React.useState('Бугун');
+    const [activeRight, setActiveRight] = React.useState('Бу ойда');
+    const [date, setDate] = React.useState('thismonth')
+    const [dataTable, setDataTable] = React.useState([])
 
     // Error Start
     const [errorDate, setErrorDate] = React.useState('')
@@ -60,28 +62,45 @@ const ChakanaSavdo = () => {
         }
     ];
 
+    const [startDate, setStartDate] = React.useState('');
+    const [endDate, setEndDate] = React.useState('');
+
+
     // Функции для правого списка
     const rightFunctions = [
         {
             label: 'Бугун',
-            action: () => console.log('Функция для Бугуна')
+            action: () => {
+                setDate('today')
+                setStartDate('')
+                setEndDate('')
+            }
         },
         {
             label: 'Бу ҳафта',
-            action: () => console.log('Функция для Бу ҳафта')
+            action: () => {
+                setDate('thisweek')
+                setStartDate('')
+                setEndDate('')
+            }
         },
         {
             label: 'Бу ойда',
-            action: () => console.log('Функция для Бу ойда')
+            action: () => {
+                setDate('thismonth')
+                setStartDate('')
+                setEndDate('')
+            }
         },
         {
             label: 'Бу квартал',
-            action: () => console.log('Функция для Бу квартал')
+            action: () => {
+                setDate('thisquarter')
+                setStartDate('')
+                setEndDate('')
+            }
         }
     ];
-
-    const [startDate, setStartDate] = React.useState('');
-    const [endDate, setEndDate] = React.useState('');
 
     const handleStartDateChange = (e) => {
         const selectedStartDate = e.target.value;
@@ -106,7 +125,38 @@ const ChakanaSavdo = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        console.log(startDate, '-', endDate);
+        ///// get statistics Start
+        const fullUrl = `${url}/admin/retail/?start_date=${startDate}&end_date=${endDate}`;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+                    setDataTable(data)
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        fetchData();
+        ///// get statistics End
     };
 
     const exportPDF = () => {
@@ -122,6 +172,43 @@ const ChakanaSavdo = () => {
         });
     };
 
+
+    ///// get statistics Start
+    React.useEffect(() => {
+        const fullUrl = `${url}/admin/retail/?filter=${date}`;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+                    setDataTable(data)
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        fetchData();
+    }, [date]);
+    ///// get statistics End
+
+    console.log(dataTable);
 
     return (
         <div className={styles.chakanaSavdo}>
@@ -211,38 +298,27 @@ const ChakanaSavdo = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td></td>
-                            <td>442</td>
-                            <td>17.05.2024</td>
-                            <td>чакана савдо</td>
-                            <td>ж.ш</td>
-                            <td>21 000,00</td>
-                            <td>0,00</td>
-                            <td>0,00</td>
-                            <td>0,00</td>
-                            <td>16.05.2024</td>
-                            <td>КАССИР</td>
-                            <td>101</td>
-                            <td>Mayk Taysonaliyev</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>442</td>
-                            <td>17.05.2024</td>
-                            <td>чакана савдо</td>
-                            <td>ж.ш</td>
-                            <td>21 000,00</td>
-                            <td>0,00</td>
-                            <td>0,00</td>
-                            <td>0,00</td>
-                            <td>16.05.2024</td>
-                            <td>КАССИР</td>
-                            <td>101</td>
-                            <td>Mayk Taysonaliyev</td>
-                        </tr>
+                        {
+                            dataTable?.map((item) => (
+                                <tr key={item.sale_id}>
+                                    <td></td>
+                                    <td>{item.sale_id}</td>
+                                    <td>{item.date_added}</td>
+                                    <td>чакана савдо</td>
+                                    <td>ж.ш</td>
+                                    <td>{item.amount}</td>
+                                    <td>{item.payment_type == "naqd" ? item.amount : 0}</td>
+                                    <td>{item.payment_type == "card" ? item.amount : 0}</td>
+                                    <td>{item.payment_type == "nasiya" ? item.amount : 0}</td>
+                                    <td>{item.date_added}</td>
+                                    <td>КАССИР</td>
+                                    <td>{item.shift_name}</td>
+                                    <td>{item.owner_name}</td>
+                                </tr>
+                            ))
+                        }
                     </tbody>
-                    <tfoot>
+                    {/* <tfoot>
                         <tr>
                             <th></th>
                             <th></th>
@@ -258,7 +334,7 @@ const ChakanaSavdo = () => {
                             <th></th>
                             <th></th>
                         </tr>
-                    </tfoot>
+                    </tfoot> */}
                 </table>
             </div>
         </div>
