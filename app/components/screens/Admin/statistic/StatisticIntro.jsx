@@ -148,7 +148,7 @@ const StatisticIntro = () => {
         fetchData();
     }, [de]);
     ///// get shifts End
-    
+
     ///// post Cource Start
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -167,7 +167,7 @@ const StatisticIntro = () => {
                     hashed_password: formData.password,
                     first_name: formData.name,
                     last_name: formData.last_name,
-                    birth_date: formData.birthDate,
+                    born_date: formData.birthDate,
                     phone_number: formData.phone,
                     address: formData.address,
                     shift_id: formData.shift,
@@ -178,8 +178,18 @@ const StatisticIntro = () => {
             const data = await response.json();
 
             if (data) {
-                setFormData([])
+                setFormData({
+                    name: '',
+                    last_name: '',
+                    birthDate: '',
+                    phone: '',
+                    address: '',
+                    shift: 1,
+                    username: '',
+                    password: ''
+                })
                 setDe(!de)
+                setModal(false)
             }
         } catch (error) {
             console.error('Error during POST request:', error);
@@ -188,7 +198,7 @@ const StatisticIntro = () => {
     ///// post Cource End
 
     const data = [dataChart.graph_objects?.overall_sum_expance_current_month, dataChart.graph_objects?.overall_sum_of_sale, dataChart.graph_objects?.overall_sum_of_profit];
-
+    console.log(formData);
     return (
         <section className={styles.statisticIntro}>
             <div
@@ -227,7 +237,7 @@ const StatisticIntro = () => {
 
                         <label htmlFor="birthDate">
                             <p>Туғилган сана:</p>
-                            <input type="text" id="birthDate" name="birthDate" value={formData.birthDate} onChange={handleChange} />
+                            <input type="date" id="birthDate" name="birthDate" value={formData.birthDate} onChange={handleChange} />
                         </label>
                         <label htmlFor="phone">
                             <p>Телефон:</p>
@@ -409,7 +419,7 @@ const StatisticIntro = () => {
                                                 <td>{(item.user_sale_count)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                                 <td>{(item.user_scores)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                                 <td>{(item.user_salaries)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                                <td>{(item.user_bonus)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                                <td>{(item.user_scores)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                             </tr>
                                         ))
                                     }

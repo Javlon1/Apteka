@@ -281,7 +281,7 @@ const Intro = () => {
 
         setFilterText(search);
         setCurrentPage(1);
-    };
+    }; 
 
     const handleKeyPress = (event) => {
         if (event.keyCode === 70 && (event.metaKey || event.ctrlKey)) {

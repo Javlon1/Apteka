@@ -1,68 +1,32 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Link from 'next/link'
 import Image from 'next/image'
 import styles from './Intro.module.scss'
 import { Context } from '@/app/components/ui/Context/Context';
 
-const data = [
-    {
-        id: 1,
-        name: 'Маош-442  13:41 15.04.2024',
-        price: "2.000.000",
-        expiration: "13:41 15.04.2024",
-        admin: "Админ",
-    },
-    {
-        id: 2,
-        name: 'Маош-442  13:41 15.04.2024',
-        price: "2.000.000",
-        expiration: "13:41 15.04.2024",
-        admin: "Админ",
-    },
-    {
-        id: 3,
-        name: 'Маош-442  13:41 15.04.2024',
-        price: "2.000.000",
-        expiration: "13:41 15.04.2024",
-        admin: "Админ",
-    },
-    {
-        id: 4,
-        name: 'Маош-442  13:41 15.04.2024',
-        price: "2.000.000",
-        expiration: "13:41 15.04.2024",
-        admin: "Админ",
-    },
-    {
-        id: 5,
-        name: 'Маош-442  13:41 15.04.2024',
-        price: "2.000.000",
-        expiration: "13:41 15.04.2024",
-        admin: "Админ",
-    },
-    {
-        id: 6,
-        name: 'Маош-442  13:41 15.04.2024',
-        price: "2.000.000",
-        expiration: "13:41 15.04.2024",
-        admin: "Админ",
-    },
-]
-
 const Intro = () => {
-    const { lan } = useContext(Context);
+    const { auth_token, url } = useContext(Context);
     const [activeDateFilter, setActiveDateFilter] = useState(0);
     const [activeDateBall, setActiveDateBall] = useState(0);
     const [modal, setModal] = useState(false)
+    const [de, setDe] = useState(false)
+    const [userData, setUserData] = useState([])
+    const [dateTime, setDateTime] = useState(new Date());
+
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const day = ('0' + date.getDate()).slice(-2);
+
+        return `${year}-${month}-${day}`;
+    };
 
     const handleDateFilter = (index) => {
         setActiveDateFilter(index);
-        console.log(`index: ${index}`);
     };
 
     const handleDateBall = (index) => {
         setActiveDateBall(index);
-        console.log(`index: ${index}`);
     };
 
     const dateFilter = [
@@ -86,18 +50,115 @@ const Intro = () => {
     const handlePhoneChange = (e) => setPhone(e.target.value);
     const handleAddressChange = (e) => setAddress(e.target.value);
 
-    const handleSubmit = (e) => {
+    if (activeDateFilter == 0) {
+        ///// get statistics Start
+        const fullUrl = `${url}/profile/?date=${formatDate(dateTime)}`;
+        useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const response = await fetch(fullUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${auth_token}`,
+                        },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Ошибка: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (data) {
+                        setUserData(data)
+                    } else {
+                        console.error('Ошибка: Некорректные данные получены от сервера.');
+                    }
+
+                } catch (error) {
+                    console.error('Ошибка при запросе данных:', error.message);
+                }
+            };
+
+            fetchData();
+        }, [de])
+        ///// get statistics End
+    } else if (activeDateFilter == 1) {
+        ///// get statistics Start
+        const fullUrl = `${url}/profile/?this_month=${formatDate(dateTime)}`;
+        useEffect(() => {
+
+            const fetchData = async () => {
+                try {
+                    const response = await fetch(fullUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${auth_token}`,
+                        },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Ошибка: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (data) {
+                        setUserData(data)
+                    } else {
+                        console.error('Ошибка: Некорректные данные получены от сервера.');
+                    }
+
+                } catch (error) {
+                    console.error('Ошибка при запросе данных:', error.message);
+                }
+            };
+
+            fetchData();
+        }, [de])
+        ///// get statistics End
+    }
+
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log({
-            name,
-            birthDate,
-            phone,
-            address
-        });
+        const fullUrl = `${url}/profile/edit`;
 
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+                body: JSON.stringify({
+                    first_name: name,
+                    born_date: birthDate,
+                    phone_number: phone,
+                    address
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data) {
+                setName('')
+                setBirthDate('')
+                setPhone('')
+                setAddress('')
+                setDe(!de)
+                setModal(false)
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
     };
 
+
+    console.log(userData);
 
     return (
         <div className={styles.intro}>
@@ -122,7 +183,7 @@ const Intro = () => {
                             id="name"
                             placeholder='Исм:'
                             type="text"
-                            value={name}
+                            defaultValue={userData.user?.first_name}
                             onChange={handleNameChange}
                         />
                     </label>
@@ -132,7 +193,7 @@ const Intro = () => {
                             id="birthDate"
                             placeholder='Туғилган caна:'
                             type="date"
-                            value={birthDate}
+                            defaultValue={userData.user?.born_date}
                             onChange={handleBirthDateChange}
                         />
                     </label>
@@ -141,8 +202,8 @@ const Intro = () => {
                         <input
                             id="phone"
                             placeholder='Телефон:'
-                            type="number"
-                            value={phone}
+                            type="text"
+                            defaultValue={userData.user?.phone}
                             onChange={handlePhoneChange}
                         />
                     </label>
@@ -152,7 +213,7 @@ const Intro = () => {
                             id="address"
                             placeholder='Манзил:'
                             type="text"
-                            value={address}
+                            defaultValue={userData.user?.address}
                             onChange={handleAddressChange}
                         />
                     </label>
@@ -185,23 +246,23 @@ const Intro = () => {
                         <div className={styles.intro__center__left__user__list}>
                             <span className={styles.intro__center__left__user__list__item}>
                                 <p>Кассир:</p>
-                                <b className={styles.name}>Mukhammadjonov Javlon</b>
+                                <b className={styles.name}>{userData.user?.last_name} {userData.user?.first_name}</b>
                             </span>
                             <span className={styles.intro__center__left__user__list__item}>
                                 <p>Туғилган сана:</p>
-                                <b>05.03.2003</b>
+                                <b>{userData.user?.born_date}</b>
                             </span>
                             <span className={styles.intro__center__left__user__list__item}>
                                 <p>Телефон:</p>
-                                <b>+998905251243</b>
+                                <b>{userData.user?.phone}</b>
                             </span>
                             <span className={styles.intro__center__left__user__list__item}>
                                 <p>Манзил:</p>
-                                <b>Norin tum.Haqulobod sh. Mirzo Ulug’bek 21-uy</b>
+                                <b>{userData.user?.address}</b>
                             </span>
                             <span className={styles.intro__center__left__user__list__item}>
                                 <p>Смена:</p>
-                                <b>1-Смена</b>
+                                <b>{userData.user?.shift.name}</b>
                             </span>
                         </div>
                         <button
@@ -245,26 +306,51 @@ const Intro = () => {
                         </ul>
                     </div>
                     <div className={styles.intro__center__right__table}>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Маош</th>
-                                    <th>Суммаси</th>
-                                    <th>Вақти</th>
-                                    <th>Берувчи</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data.map((item, key) => (
-                                    <tr key={key}>
-                                        <td>{item.name}</td>
-                                        <td>{item.price}</td>
-                                        <td>{item.expiration}</td>
-                                        <td>{item.admin}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        {
+                            activeDateBall === 0 ? (
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Маош</th>
+                                            <th>Суммаси</th>
+                                            <th>Вақти</th>
+                                            <th>Берувчи</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {userData.user_salaries?.map((item, key) => (
+                                            <tr key={key}>
+                                                <td>{item.type}</td>
+                                                <td>{item.amount}</td>
+                                                <td>{item.date_received}</td>
+                                                <td>{item.giver_username}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Махсулот номи</th>
+                                            <th>Балл</th>
+                                            <th>Вақти</th>
+                                            <th>Махсулот суммаси</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {userData.user_scores?.map((item, key) => (
+                                            <tr key={key}>
+                                                <td>{item.item.sale_product_items.name}</td>
+                                                <td>{item.score}</td>
+                                                <td>{item.date_scored}</td>
+                                                <td>{item.item.total_sum}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            )
+                        }
                     </div>
                 </div>
             </div>

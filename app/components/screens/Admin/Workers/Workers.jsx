@@ -342,7 +342,7 @@ const WorkersInrto = () => {
 
                         <label htmlFor="birthDate">
                             <p>Туғилган сана:</p>
-                            <input type="text" id="birthDate" name="birthDate" value={formData.birthDate} onChange={handleChange} />
+                            <input type="date" id="birthDate" name="birthDate" value={formData.birthDate} onChange={handleChange} />
                         </label>
                         <label htmlFor="phone">
                             <p>Телефон:</p>
@@ -467,7 +467,7 @@ const WorkersInrto = () => {
                                         <td>{(item.user_sale_count)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                         <td>{(item.user_scores)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                         <td>{(item.user_salaries)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                        <td>{(item.user_bonus)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                        <td>{(item.user_scores)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                     </tr>
                                 ))
                             }
