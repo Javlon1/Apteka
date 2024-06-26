@@ -9,9 +9,21 @@ const Intro = () => {
     const [activeDateFilter, setActiveDateFilter] = useState(0);
     const [activeDateBall, setActiveDateBall] = useState(0);
     const [modal, setModal] = useState(false)
+    const [modalDate, setModalDate] = useState(false)
     const [de, setDe] = useState(false)
     const [userData, setUserData] = useState([])
-    const [dateTime, setDateTime] = useState(new Date());
+    const [dateTime] = useState(new Date());
+    const [danDate, setDanDate] = useState('');
+    const [gachaDate, setGachaDate] = useState('');
+
+    const handleDanDateChange = (e) => {
+        setDanDate(e.target.value);
+    };
+
+    const handleGachaDateChange = (e) => {
+        setGachaDate(e.target.value);
+    };
+
 
     const formatDate = (date) => {
         const year = date.getFullYear();
@@ -51,9 +63,12 @@ const Intro = () => {
     const handleAddressChange = (e) => setAddress(e.target.value);
 
     if (activeDateFilter == 0) {
+
         ///// get statistics Start
         const fullUrl = `${url}/profile/?date=${formatDate(dateTime)}`;
         useEffect(() => {
+            setModalDate(false);
+
             const fetchData = async () => {
                 try {
                     const response = await fetch(fullUrl, {
@@ -89,6 +104,7 @@ const Intro = () => {
         const fullUrl = `${url}/profile/?this_month=${formatDate(dateTime)}`;
         useEffect(() => {
 
+            setModalDate(false);
             const fetchData = async () => {
                 try {
                     const response = await fetch(fullUrl, {
@@ -119,8 +135,48 @@ const Intro = () => {
             fetchData();
         }, [de])
         ///// get statistics End
+    } else if (activeDateFilter == 2) {
+        const fullUrl = `${url}/profile/?start_date=${danDate}&end_date=${gachaDate}`;
+
+        useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const response = await fetch(fullUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${auth_token}`,
+                        },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Ошибка: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (data) {
+                        setUserData(data)
+                    } else {
+                        console.error('Ошибка: Некорректные данные получены от сервера.');
+                    }
+
+                } catch (error) {
+                    console.error('Ошибка при запросе данных:', error.message);
+                }
+            };
+
+            fetchData();
+        }, [de])
     }
 
+    useEffect(() => {
+        if (activeDateFilter === 2) {
+            setModalDate(true);
+        } else {
+            setModalDate(false);
+        }
+    }, [activeDateFilter]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -163,9 +219,10 @@ const Intro = () => {
     return (
         <div className={styles.intro}>
             <div
-                className={`${styles.modalOpacity} ${modal ? styles.actModal : ""}`}
+                className={`${styles.modalOpacity} ${modal ? styles.actModal : modalDate ? styles.actModal : ""}`}
                 onClick={() => {
                     setModal(false)
+                    setModalDate(false)
                 }}
             ></div>
 
@@ -226,6 +283,41 @@ const Intro = () => {
                     </button>
                 </form>
             </div>
+            <div className={`${styles.modal} ${modalDate ? styles.actModal : ""}`}>
+                <p
+                    className={styles.x}
+                    onClick={() => setModalDate(false)}
+                >
+                    <i className="fa-solid fa-x"></i>
+                </p>
+                <form className={styles.modal__body} onSubmit={handleSubmit}>
+                    <label htmlFor="dan">
+                        <p>dan:</p>
+                        <input
+                            id="dan"
+                            placeholder='dan:'
+                            type="date"
+                            value={danDate}
+                            onChange={handleDanDateChange}
+                        />
+                    </label>
+                    <label htmlFor="gacha">
+                        <p>gacha:</p>
+                        <input
+                            id="gacha"
+                            placeholder='gacha:'
+                            type="date"
+                            value={gachaDate}
+                            onChange={handleGachaDateChange}
+                        />
+                    </label>
+                    <p
+                        className={styles.modal__btn}
+                        onClick={() => setModalDate(false)}
+                    >юбориш</p>
+                </form>
+            </div>
+
             <div className={styles.intro__top}>
                 <ul className={styles.intro__top__list}>
                     {dateFilter.map((item, index) => (
@@ -279,14 +371,14 @@ const Intro = () => {
                                 <i className="fa-regular fa-star"></i>
                                 <p>Менинг балларим</p>
                             </span>
-                            <b>213.560</b>
+                            <b>{userData.overall_user_score}</b>
                         </div>
                         <div className={styles.intro__center__left__userItem__bottom}>
                             <span>
                                 <i className="fa-solid fa-calendar-days"></i>
                                 <p>Бу ой</p>
                             </span>
-                            <b>12.000</b>
+                            <b>{userData.this_month_score}</b>
                         </div>
                     </div>
                 </div>
@@ -338,16 +430,23 @@ const Intro = () => {
                                             <th>Махсулот суммаси</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        {userData.user_scores?.map((item, key) => (
-                                            <tr key={key}>
-                                                <td>{item.item.sale_product_items.name}</td>
-                                                <td>{item.score}</td>
-                                                <td>{item.date_scored}</td>
-                                                <td>{item.item.total_sum}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
+                                    {
+                                        userData.user_scores.message ? (
+                                            <div></div>
+                                        ) :
+                                            (
+                                                <tbody>
+                                                    {userData.user_scores?.map((item, key) => (
+                                                        <tr key={key}>
+                                                            <td>{item.item.sale_product_items.name}</td>
+                                                            <td>{item.score}</td>
+                                                            <td>{item.date_scored}</td>
+                                                            <td>{item.item.total_sum}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            )
+                                    }
                                 </table>
                             )
                         }
