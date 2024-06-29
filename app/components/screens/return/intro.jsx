@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import styles from './Intro.module.scss';
+import styles from '../home/Intro.module.scss';
 import { Context } from '@/app/components/ui/Context/Context';
 
 
@@ -474,8 +474,8 @@ const Intro = () => {
                         </div>
                     </div>
                     <button onClick={() => { setOrder([]) }} className={styles.intro__center__right__btn}>
-                        <i className="fa-solid fa-xmark"></i>
-                        Чекни ёпиш
+                        <i className="fa-solid fa-rotate-left"></i>
+                        Возврат қилиш
                     </button>
                 </div>
             </div>

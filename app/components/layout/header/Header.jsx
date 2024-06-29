@@ -11,6 +11,20 @@ const Header = () => {
     const [dateTime, setDateTime] = useState(new Date());
     const { pathname } = useRouter();
     const router = useRouter();
+    const [modal, setModal] = useState(false)
+
+    const [formData, setFormData] = useState({
+        expenseType: '',
+        expenseAmount: ''
+    });
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
 
 
     const logOut = () => {
@@ -28,12 +42,6 @@ const Header = () => {
             link: '/',
             nav: 'Асосий',
             icon: "fa-solid fa-house"
-        },
-        {
-            id: 2,
-            link: '/incom',
-            nav: 'Чиқим',
-            icon: "fa-regular fa-user"
         },
         {
             id: 3,
@@ -103,10 +111,59 @@ const Header = () => {
         };
     }, []);
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        console.log(formData);
+    };
+
 
     return (
         <div>
             <header className={styles.header}>
+
+                <div
+                    className={`${styles.modalOpacity} ${modal ? styles.actModal : ""}`}
+                    onClick={() => {
+                        setModal(false)
+                    }}
+                ></div>
+
+                <div className={`${styles.modal} ${modal ? styles.actModal : ""}`}>
+                    <div className={styles.modal__body}>
+                        <form onSubmit={handleSubmit}>
+                            <div>
+                                <p onClick={() => setModal(false)}>
+                                    <i className="fa-solid fa-x"></i>
+                                </p>
+                            </div>
+                            <label>
+                                <p>Чиқим тури:</p>
+                                <input
+                                    type="text"
+                                    name="expenseType"
+                                    value={formData.expenseType}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </label>
+                            <label>
+                                <p>Чиқим суммаси:</p>
+                                <input
+                                    type="text"
+                                    name="expenseAmount"
+                                    value={formData.expenseAmount}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </label>
+                            <button type="submit">
+                                <i className="fa-solid fa-file-invoice"></i>
+                                Сақлаш
+                            </button>
+                        </form>
+                    </div>
+                </div>
                 <Image
                     src={logo}
                     alt='logo'
@@ -155,9 +212,21 @@ const Header = () => {
                                 </Link>
                             ))
                         }
+                        {
+                            (pathname === '/profil') && (
+                                <button onClick={() => setModal(true)} className={styles.qwe}>
+                                    <i className="fa-solid fa-plus"></i>
+                                    <p>
+                                        Чиқим
+                                    </p>
+                                </button>
+                            )
+                        }
                     </div>
                     <div className={styles.sidebar__bottom__items}>
-                        <button>
+                        <button onClick={() => {
+                            router.push('/return');
+                        }}>
                             <i className="fa-solid fa-rotate-left"></i>
                             Возврат
                         </button>
