@@ -157,6 +157,9 @@ const Intro = () => {
 
                     if (data) {
                         setUserData(data)
+                        setDanDate('')
+                        setGachaDate('')
+                        setModalDate(false)
                     } else {
                         console.error('Ошибка: Некорректные данные получены от сервера.');
                     }
@@ -167,7 +170,7 @@ const Intro = () => {
             };
 
             fetchData();
-        }, [de])
+        }, [danDate, gachaDate])
     }
 
     useEffect(() => {
@@ -215,6 +218,8 @@ const Intro = () => {
 
 
     console.log(userData);
+    console.log(danDate);
+    console.log(gachaDate);
 
     return (
         <div className={styles.intro}>
@@ -286,7 +291,10 @@ const Intro = () => {
             <div className={`${styles.modal} ${modalDate ? styles.actModal : ""}`}>
                 <p
                     className={styles.x}
-                    onClick={() => setModalDate(false)}
+                    onClick={() => {
+                        setModalDate(false)
+                        // setActiveDateFilter(2)
+                    }}
                 >
                     <i className="fa-solid fa-x"></i>
                 </p>
@@ -313,7 +321,10 @@ const Intro = () => {
                     </label>
                     <p
                         className={styles.modal__btn}
-                        onClick={() => setModalDate(false)}
+                        onClick={() => {
+                            setModalDate(false)
+                            // setActiveDateFilter(2)
+                        }}
                     >юбориш</p>
                 </form>
             </div>

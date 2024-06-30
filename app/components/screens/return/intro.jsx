@@ -4,14 +4,16 @@ import styles from '../home/Intro.module.scss';
 import { Context } from '@/app/components/ui/Context/Context';
 
 
+
 const Intro = () => {
-    const { checkNumber, setCheckNumber, order, setOrder, url, auth_token } = useContext(Context);
+    const { order, setOrder, url, auth_token } = useContext(Context);
     const [dateTime, setDateTime] = useState(new Date());
     const [modal, setModal] = useState(false)
     const [de, setDe] = useState(false)
     const [data, setData] = useState([])
     const [dataCheck, setDataCheck] = useState(0)
     const [dataItems, setDataItems] = useState([])
+    const [checkObject, setCheckObject] = useState([])
     const [totalAmount, setTotalAmount] = useState(0);
 
     const [formData, setFormData] = useState({
@@ -31,7 +33,7 @@ const Intro = () => {
 
     ///// get statistics Start
     useEffect(() => {
-        const fullUrl = `${url}/home/?check_id=${dataCheck}`;
+        const fullUrl = `${url}/return/?return_id=${dataCheck}`;
 
         const fetchData = async () => {
             try {
@@ -53,6 +55,7 @@ const Intro = () => {
                     setData(data.products)
                     setDataCheck(data.check.id)
                     setDataItems(data.items)
+                    setCheckObject(data.check_object)
                 } else {
                     console.error('Ошибка: Некорректные данные получены от сервера.');
                 }
@@ -164,7 +167,7 @@ const Intro = () => {
     const delOrder = async (id) => {
         const newOrder = order.filter(item => item.id !== id);
 
-        const fullUrl = `${url}/delete_check_item/?sale_item_id=${id}`;
+        const fullUrl = `${url}/delete_return_item/?return_item_id=${id}`;
 
         try {
             const response = await fetch(fullUrl, {
@@ -224,7 +227,7 @@ const Intro = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const fullUrl = `${url}/add_to_check/`;
+        const fullUrl = `${url}/remove_from_check/`;
 
         try {
             const response = await fetch(fullUrl, {
@@ -239,7 +242,7 @@ const Intro = () => {
                     amount_from_package: parseInt(formData.additionalField3),
                     total_sum: parseFloat(totalAmount),
                     product_id: addItem.id,
-                    sale_id: dataCheck,
+                    return_id: dataCheck,
                 }),
             });
 
@@ -396,17 +399,8 @@ const Intro = () => {
             <div className={styles.intro__top}>
                 <p>
                     <i className="fa-regular fa-file-lines"></i>
-                    Чек N{dataCheck}
+                    Возврат N{dataCheck}
                 </p>
-                <Link href={'/'}
-                    onClick={() => {
-                        setDe(!de)
-                        setDataCheck(0)
-                    }}
-                >
-                    <i className="fa-solid fa-file-arrow-up"></i>
-                    Янги чек очиш
-                </Link>
             </div>
 
             <div className={styles.intro__center}>
@@ -425,7 +419,7 @@ const Intro = () => {
                             </thead>
                             <tbody>
                                 {dataItems.map((item, key) => {
-                                    const bgColor = getBackgroundColor(item.sale_product_items.expiry_date);
+                                    const bgColor = getBackgroundColor(item.returned_items.expiry_date);
                                     return (
                                         <tr key={key} className={bgColor}>
                                             <td className={styles.icon__list}>
@@ -438,11 +432,11 @@ const Intro = () => {
                                                     <i className="fa-solid fa-trash"></i>
                                                 </button>
                                             </td>
-                                            <td>{item.sale_product_items.name}</td>
+                                            <td>{item.returned_items.name}</td>
                                             <td>{(item.amount_of_box)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                             <td>{(item.total_sum)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                            <td>{item.sale_product_items.expiry_date}</td>
-                                            <td>{(item.sale_product_items.amount_in_box)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>{item.returned_items.expiry_date}</td>
+                                            <td>{(item.returned_items.amount_in_box)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                         </tr>
                                     )
                                 })}
@@ -454,7 +448,7 @@ const Intro = () => {
                     <div className={styles.intro__center__right__list}>
                         <div className={styles.intro__center__right__list__item}>
                             <p>Чек рақами:</p>
-                            <b>{checkNumber}</b>
+                            <b>{dataCheck}</b>
                         </div>
                         <div className={styles.intro__center__right__list__item}>
                             <p>Бугунги сана:</p>
@@ -462,15 +456,15 @@ const Intro = () => {
                         </div>
                         <div className={styles.intro__center__right__list__item}>
                             <p>Тўловга:</p>
-                            <b>{(totalPrice)?.toLocaleString('en-US').replace(/,/g, ' ')}</b>
+                            <b>{(checkObject.payment)?.toLocaleString('en-US').replace(/,/g, ' ')}</b>
                         </div>
                         <div className={styles.intro__center__right__list__item}>
                             <p>Чегирма:</p>
-                            <b>0.0</b>
+                            <b>{checkObject.total_discount}</b>
                         </div>
                         <div className={styles.intro__center__right__list__item}>
                             <p>Жами:</p>
-                            <b>{(totalPrice)?.toLocaleString('en-US').replace(/,/g, ' ')}</b>
+                            <b>{(checkObject.total)?.toLocaleString('en-US').replace(/,/g, ' ')}</b>
                         </div>
                     </div>
                     <button onClick={() => { setOrder([]) }} className={styles.intro__center__right__btn}>
@@ -481,7 +475,7 @@ const Intro = () => {
             </div>
 
             <div className={styles.intro__controls}>
-                <span>Тўловга: <p>{(totalPrice)?.toLocaleString('en-US').replace(/,/g, ' ')}</p></span>
+                <span>Жами: <p>{(checkObject.total)?.toLocaleString('en-US').replace(/,/g, ' ')}</p></span>
                 <form onSubmit={handleSearchFilter} className={styles.intro__controls__search}>
                     <button type='submit'>
                         <i className="fa-solid fa-magnifying-glass"></i>

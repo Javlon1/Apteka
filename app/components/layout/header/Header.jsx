@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const Header = () => {
-    const { close, setClose, setAuth_token } = useContext(Context);
+    const { url, setAuth_token, auth_token } = useContext(Context);
     const [dateTime, setDateTime] = useState(new Date());
     const { pathname } = useRouter();
     const router = useRouter();
@@ -114,7 +114,35 @@ const Header = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        console.log(formData);
+
+        const fullUrl = `${url}/expance/add`;
+
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+                body: JSON.stringify({
+                    name: formData.expenseType,
+                    amount: formData.expenseAmount,
+                }),
+            });
+
+            const data = await response.json();
+            
+            if (data.message) {
+                // setDe(!de)
+                setModal(false);
+                setFormData({
+                    expenseType: '',
+                    expenseAmount: ''
+                })
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
     };
 
 
