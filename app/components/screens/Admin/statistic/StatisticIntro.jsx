@@ -379,7 +379,7 @@ const StatisticIntro = () => {
                                                 <td>{item.product_name}</td>
                                                 <td>{(item.quantity_sold).toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                                 <td>{(item.total_sales).toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                                <td>{item.share}</td>
+                                                <td>{item.percentage_of_overall_sales_revenue}</td>
                                             </tr>
                                         ))
                                     }
