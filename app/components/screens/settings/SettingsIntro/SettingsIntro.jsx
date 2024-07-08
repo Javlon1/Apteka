@@ -13,44 +13,6 @@ import PieChart from '@/app/components/ui/PieChart/PieChart';
 import chart from "../../../../../public/img/chart.png"
 
 
-const dataTable = [
-    {
-        id: 1,
-        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
-        quantity: 20,
-        price: 23000,
-        share: "Узбекиjстан",
-    },
-    {
-        id: 2,
-        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
-        quantity: 20,
-        price: 23000,
-        share: "Узбекистан",
-    },
-    {
-        id: 3,
-        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
-        quantity: 20,
-        price: 23000,
-        share: "Узбекистан",
-    },
-    {
-        id: 4,
-        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
-        quantity: 20,
-        price: 23000,
-        share: "Узбекистан",
-    },
-    {
-        id: 5,
-        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
-        quantity: 20,
-        price: 23000,
-        share: "Узбекистан",
-    },
-]
-
 const SettingsIntro = () => {
     const { setError, auth_token, url } = React.useContext(Context);
     const [activeLeft, setActiveLeft] = React.useState('Созламалар');
@@ -58,6 +20,7 @@ const SettingsIntro = () => {
     const [dataShifts, setDataShifts] = React.useState([])
     const [de, setDe] = React.useState(false)
     const [dataChart, setDataChart] = React.useState([])
+    const [dataUser, setDataUser] = React.useState([])
     const [modal, setModal] = React.useState(false)
 
     // Error Start
@@ -106,25 +69,6 @@ const SettingsIntro = () => {
         }
     ];
 
-    // Функции для правого списка
-    const rightFunctions = [
-        {
-            label: 'Бугун',
-            action: () => console.log('Функция для Бугуна')
-        },
-        {
-            label: 'Бу ҳафта',
-            action: () => console.log('Функция для Бу ҳафта')
-        },
-        {
-            label: 'Бу ойда',
-            action: () => console.log('Функция для Бу ойда')
-        },
-        {
-            label: 'Бу квартал',
-            action: () => console.log('Функция для Бу квартал')
-        }
-    ];
 
     const [startDate, setStartDate] = React.useState('');
     const [endDate, setEndDate] = React.useState('');
@@ -198,13 +142,18 @@ const SettingsIntro = () => {
         phoneNumber: '',
         address: '',
         shiftId: 1,
+        categoryName: '',
+        worker: '',
+        workerSalary: '',
+        firstName: '',
+        lastName: '',
+        phoneNumberr: ''
     });
 
 
     const [shiftFormData, setShiftFormData] = React.useState({
         shiftName: ''
     });
-
 
 
     const handleInputChange = (e) => {
@@ -238,6 +187,39 @@ const SettingsIntro = () => {
 
                 if (data) {
                     setDataChart(data)
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        fetchData();
+    }, [de]);
+
+    React.useEffect(() => {
+        const fullUrl = `${url}/admin/users/`;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+                    setDataUser(data)
                 } else {
                     console.error('Ошибка: Некорректные данные получены от сервера.');
                 }
@@ -408,6 +390,109 @@ const SettingsIntro = () => {
     };
     ///// post Cource End
 
+    const handleAddCategorySubmit = async (e) => {
+        e.preventDefault();
+
+        const fullUrl = `${url}/admin/category/add`;
+
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+                body: JSON.stringify({
+                    name: formData.categoryName,
+                }),
+            });
+
+            const data = await response.json();
+
+            console.log(data);
+
+            if (data) {
+                setFormData({
+                    categoryName: '',
+                })
+                setDe(!de)
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
+    };
+
+    const handleAddSalarySubmit = async (e) => {
+        e.preventDefault();
+
+        const fullUrl = `${url}/admin/salary/`;
+
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+                body: JSON.stringify({
+                    amount: formData.workerSalary,
+                    type: "oylik",
+                    receiver_id: formData.worker
+                }),
+            });
+
+            const data = await response.json();
+
+            console.log(data);
+
+            if (data) {
+                setFormData({
+                    workerSalary: '',
+                    worker: '',
+                })
+                setDe(!de)
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
+    };
+
+    const handleAddCashbackCardSubmit = async (e) => {
+        e.preventDefault();
+
+        const fullUrl = `${url}/admin/discount-card/create/`;
+
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+                body: JSON.stringify({
+                    number: formData.phoneNumberr,
+                    amount: 0,
+                    name: formData.firstName,
+                    surname: formData.lastName
+                }),
+            });
+
+            const data = await response.json();
+
+            console.log(data);
+
+            if (data) {
+                setFormData({
+                    phoneNumberr: '',
+                    firstName: '',
+                    lastName: '',
+                })
+                setDe(!de)
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
+    };
 
 
     return (
@@ -499,95 +584,134 @@ const SettingsIntro = () => {
                 </div>
             </div>
 
-            {/* <div className={styles.settingsIntro__center}>
-                <div className={styles.settingsIntro__center__left}>
-                    <Image
-                        width={40}
-                        height={40}
-                        src={calendar}
-                        alt='calendar'
-                    />
-
-                    <form className={styles.settingsIntro__center__left__form} onSubmit={handleSubmit}>
-                        <input
-                            type="date"
-                            value={startDate}
-                            onChange={handleStartDateChange}
-                        />
-                        <input
-                            type="date"
-                            value={endDate}
-                            onChange={handleEndDateChange}
-                        />
-                        <button type='submit'>Филтр</button>
-                    </form>
-                    <button
-                        className={styles.settingsIntro__center__left__pdf}
-                        onClick={exportPDF}
-                    >
-                        <i className="fa-solid fa-file-invoice"></i>
-                        Export
-                    </button>
-                </div>
-                <div className={styles.settingsIntro__center__right}>
-                    <ul className={styles.settingsIntro__center__right__list}>
-                        {rightFunctions.map(({ label, action }) => (
-                            <li
-                                key={label}
-                                className={`${styles.settingsIntro__center__right__list__item} ${activeRight === label ? styles.act : ''}`}
-                                onClick={() => {
-                                    setActiveRight(label);
-                                    action();
-                                }}
-                            >
-                                {label}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div> */}
-
             <div className={styles.settingsIntro__bottom}>
-                <div id="tableToExport" className={styles.settingsIntro__bottom__table}>
-                    <div className={styles.settingsIntro__bottom__table__header}>
-                        <p>Ишчилар статистикаси</p>
-                        <button
-                            onClick={() => setModal(true)}
-                        >
-                            <i className="fa-solid fa-user-plus"></i>
-                            Ишчи қўшиш
-                        </button>
-                    </div>
-                    <div className={styles.settingsIntro__bottom__table__table}>
-
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Ишчи</th>
-                                    <th>Сотувлар</th>
-                                    <th>Баллар</th>
-                                    <th>Маош</th>
-                                    <th>Премия</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    dataChart.workers_table?.map((item, key) => (
-                                        <tr key={key}>
-                                            <td>{item.worker}</td>
-                                            <td>{(item.user_sale_count)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                            <td>{(item.user_scores)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                            <td>{(item.user_salaries)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                            <td>{(item.user_scores)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
 
                 <div className={styles.settingsIntro__bottom__right}>
+
+                    <div>
+                        <div className={styles.header}>
+                            <p>смена кушиш</p>
+                        </div>
+
+                        <form onSubmit={handleAddShiftSubmit}>
+                            <label htmlFor="shiftName">
+                                <p>Смена номи:</p>
+                                <input
+                                    type="text"
+                                    id="shiftName"
+                                    name="shiftName"
+                                    value={shiftFormData.shiftName}
+                                    onChange={(e) => setShiftFormData({ shiftName: e.target.value })}
+                                />
+                            </label>
+                            <button type='submit'>
+                                Саклаш
+                            </button>
+                        </form>
+                    </div>
+
+                    <div>
+                        <div className={styles.header}>
+                            <p>махсулот категорияси</p>
+                        </div>
+
+                        <form onSubmit={handleAddCategorySubmit}>
+                            <label htmlFor="categoryName">
+                                <p>категория номи:</p>
+                                <input
+                                    type="text"
+                                    id="categoryName"
+                                    name="categoryName"
+                                    value={formData.categoryName}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </label>
+                            <button type="submit">
+                                Саклаш
+                            </button>
+                        </form>
+                    </div>
+
+                    <div>
+                        <div className={styles.header}>
+                            <p>ишчиларга ойлик</p>
+                        </div>
+
+                        <form onSubmit={handleAddSalarySubmit}>
+                            <label htmlFor="worker">
+                                <p>ишчи:</p>
+                                <select name="worker" id="worker" value={formData.worker} onChange={handleInputChange} required>
+                                    <option value="">Выберите ишчи</option>
+                                    {
+                                        dataUser?.map((item) => (
+                                            <option key={item.id} value={item.id}>{item.first_name}</option>
+                                        ))
+                                    }
+                                </select>
+                            </label>
+                            <label htmlFor="workerSalary">
+                                <p>ишчини пули:</p>
+                                <input
+                                    type="number"
+                                    id="workerSalary"
+                                    name="workerSalary"
+                                    value={formData.workerSalary}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </label>
+                            <button type="submit">
+                                Саклаш
+                            </button>
+                        </form>
+                    </div>
+
+                    <div>
+                        <div className={styles.header}>
+                            <p>Кешбек карта</p>
+                        </div>
+
+                        <form onSubmit={handleAddCashbackCardSubmit}>
+                            <label htmlFor="firstName">
+                                <p>исми:</p>
+                                <input
+                                    type="text"
+                                    id="firstName"
+                                    name="firstName"
+                                    value={formData.firstName}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </label>
+                            <label htmlFor="lastName">
+                                <p>фамилияси:</p>
+                                <input
+                                    type="text"
+                                    id="lastName"
+                                    name="lastName"
+                                    value={formData.lastName}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </label>
+                            <label htmlFor="phoneNumberr">
+                                <p>телефон раками:</p>
+                                <input
+                                    type="text"
+                                    id="phoneNumberr"
+                                    name="phoneNumberr"
+                                    value={formData.phoneNumberr}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </label>
+                            <button type="submit">
+                                Саклаш
+                            </button>
+                        </form>
+                    </div>
+
                     <div>
                         <div className={styles.header}>
                             <p>менинг аптекам</p>
@@ -647,28 +771,6 @@ const SettingsIntro = () => {
                                 </select>
                             </label>
 
-                            <button type='submit'>
-                                Саклаш
-                            </button>
-                        </form>
-                    </div>
-
-                    <div>
-                        <div className={styles.header}>
-                            <p>смена кушиш</p>
-                        </div>
-
-                        <form onSubmit={handleAddShiftSubmit}>
-                            <label htmlFor="shiftName">
-                                <p>Смена номи:</p>
-                                <input
-                                    type="text"
-                                    id="shiftName"
-                                    name="shiftName"
-                                    value={shiftFormData.shiftName}
-                                    onChange={(e) => setShiftFormData({ shiftName: e.target.value })}
-                                />
-                            </label>
                             <button type='submit'>
                                 Саклаш
                             </button>

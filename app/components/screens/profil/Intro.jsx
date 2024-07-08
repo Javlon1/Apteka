@@ -63,7 +63,7 @@ const Intro = () => {
     const handleAddressChange = (e) => setAddress(e.target.value);
 
     if (activeDateFilter == 0) {
-
+        console.log(formatDate(dateTime));
         ///// get statistics Start
         const fullUrl = `${url}/profile/?date=${formatDate(dateTime)}`;
         useEffect(() => {
@@ -87,6 +87,10 @@ const Intro = () => {
 
                     if (data) {
                         setUserData(data)
+                        setName(data.user.first_name)
+                        setBirthDate(data.user.born_date)
+                        setPhone(data.user.phone)
+                        setAddress(data.user.address)
                     } else {
                         console.error('Ошибка: Некорректные данные получены от сервера.');
                     }
@@ -97,7 +101,7 @@ const Intro = () => {
             };
 
             fetchData();
-        }, [de])
+        }, [de, activeDateFilter])
         ///// get statistics End
     } else if (activeDateFilter == 1) {
         ///// get statistics Start
@@ -133,7 +137,7 @@ const Intro = () => {
             };
 
             fetchData();
-        }, [de])
+        }, [de, activeDateFilter])
         ///// get statistics End
     } else if (activeDateFilter == 2) {
         const fullUrl = `${url}/profile/?start_date=${danDate}&end_date=${gachaDate}`;
@@ -215,11 +219,6 @@ const Intro = () => {
             console.error('Error during POST request:', error);
         }
     };
-
-
-    console.log(userData);
-    console.log(danDate);
-    console.log(gachaDate);
 
     return (
         <div className={styles.intro}>

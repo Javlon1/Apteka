@@ -5,13 +5,13 @@ import styles from './Login.module.scss'
 import { Context } from '@/app/components/ui/Context/Context';
 import { useRouter } from 'next/router';
 
-
 const LoginIntro = () => {
     const { url, setAuth_token } = useContext(Context);
     const [activeUser, setActiveUser] = useState(0);
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
+    const [loader, setLoader] = useState(false);
 
     const handleUser = (index) => {
         setActiveUser(index);
@@ -22,6 +22,7 @@ const LoginIntro = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoader(true); 
 
         const fullUrl = `${url}/token/`;
 
@@ -50,6 +51,8 @@ const LoginIntro = () => {
             }
         } catch (error) {
             console.error('Error during POST request:', error);
+        } finally {
+            setLoader(false); 
         }
     };
 
@@ -57,7 +60,6 @@ const LoginIntro = () => {
         { icon: "fa-solid fa-user-clock", text: "Сотувчи" },
         { icon: "fa-regular fa-user", text: "Админ" },
     ];
-
 
     return (
         <div className={styles.login}>
@@ -87,7 +89,7 @@ const LoginIntro = () => {
                             )
                         }
                     </div>
-                    <p className={styles.text}>Хатолик юз берди. Логин ёки парол нотўғри киритилган, илтимос текшириб қайтадан киритинг!</p>
+                    {/* <p className={styles.text}>Хатолик юз берди. Логин ёки парол нотўғри киритилган, илтимос текшириб қайтадан киритинг!</p> */}
                     <form onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor="login">
@@ -97,6 +99,7 @@ const LoginIntro = () => {
                                     placeholder='Логин'
                                     type="text"
                                     value={login}
+                                    required
                                     onChange={handleLoginChange}
                                 />
                             </label>
@@ -107,11 +110,20 @@ const LoginIntro = () => {
                                     placeholder='Парол'
                                     type="text"
                                     value={password}
+                                    required
                                     onChange={handlePasswordChange}
                                 />
                             </label>
                         </div>
-                        <button type="submit">Кириш</button>
+                        {
+                            loader ? (
+                                <b className={styles.btn}>
+                                    <div className={styles.loader}></div>
+                                </b>
+                            ) : (
+                                <button type="submit">Кириш</button>
+                            )
+                        }
                     </form>
                 </div>
             </div>

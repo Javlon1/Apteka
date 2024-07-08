@@ -2,18 +2,38 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import styles from './Intro.module.scss';
 import { Context } from '@/app/components/ui/Context/Context';
-
+import printer from '../../../../public/img/printer.png'
+import Image from 'next/image';
 
 const Intro = () => {
-    const { order, setOrder, url, auth_token } = useContext(Context);
+    const { order, setOrder, url, auth_token, sale, setSale, type } = useContext(Context);
     const [dateTime, setDateTime] = useState(new Date());
     const [modal, setModal] = useState(false)
     const [de, setDe] = useState(false)
+    const [deCard, setDeCard] = useState(false)
+    const [card, setCard] = useState([])
     const [data, setData] = useState([])
     const [dataCheck, setDataCheck] = useState(0)
     const [dataItems, setDataItems] = useState([])
     const [checkObject, setCheckObject] = useState([])
     const [totalAmount, setTotalAmount] = useState(0);
+
+    const [formSaleData, setFormSaleData] = useState({
+        discount: '',
+        cash: '',
+        payment: '',
+        humo: '',
+        card: card.amount,
+        total: '',
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormSaleData({
+            ...formSaleData,
+            [name]: value,
+        });
+    };
 
     const [formData, setFormData] = useState({
         additionalField1: '',
@@ -32,6 +52,7 @@ const Intro = () => {
 
     ///// get statistics Start
     useEffect(() => {
+
         const fullUrl = `${url}/home/?check_id=${dataCheck}`;
 
         const fetchData = async () => {
@@ -67,6 +88,7 @@ const Intro = () => {
         fetchData();
     }, [de]);
     ///// get statistics End
+
 
     // Date Format
     useEffect(() => {
@@ -282,14 +304,233 @@ const Intro = () => {
         calculateTotal();
     }, [formData]);
 
+    useEffect(() => {
+
+        const fullUrl = `${url}/admin/card/?card_id=3`;
+
+        const Cardhandler = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+
+                    setCard(data)
+
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        Cardhandler();
+    }, [deCard]);
+
+    const handleSaleSubmit = async (e) => {
+        e.preventDefault();
+
+        const fullUrl = `${url}/sell/`;
+
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+                body: JSON.stringify({
+                    check_id: dataCheck,
+                    discount_card_id: 3,
+                    from_discount_card: card.amount,
+                    payment_type: type === "Нақд" ? "naqd" : type === "Карта" ? "plastik" : type === "Насия" ? "nasiya" : "",
+                    discount: checkObject.total_discount,
+                    person: "J/S",
+                    total: checkObject.payment,
+                    with_discount_card: false
+                }),
+            });
+
+            const data = await response.json();
+
+            console.log(data);
+
+            if (data.message) {
+                setDataCheck(0)
+                setDe(!de)
+                setSale(false)
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
+
+    };
+
+    const closeSubmit = async () => {
+
+        const fullUrl = `${url}/delay/check/?check_id=${dataCheck}`;
+
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+            });
+
+            const data = await response.json();
+
+            console.log(data);
+
+            if (data.message) {
+                setDe(!de)
+                setDataCheck(0)
+            }
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        } finally {
+            setSale(false)
+        }
+    }
+
     return (
         <section className={styles.intro}>
             <div
-                className={`${styles.modalOpacity} ${modal ? styles.actModal : ""}`}
+                className={`${styles.modalOpacity} ${modal ? styles.actModal : sale ? styles.actModal : ""}`}
                 onClick={() => {
                     setModal(false)
+                    setSale(false)
                 }}
             ></div>
+            <div className={`${styles.modal} ${sale ? styles.actModal : ""}`}>
+                <div className={styles.modal__sale}>
+                    <div className={styles.modal__sale__header}>
+                        <span>
+                            <p>ТЎлов</p>
+                            <i className="fa-solid fa-money-bill-1"></i>
+                        </span>
+                        <p onClick={() => setSale(false)}>
+                            <i className="fa-solid fa-x"></i>
+                        </p>
+                    </div>
+                    <div className={styles.modal__sale__body}>
+                        <div className={styles.modal__sale__body__top}>
+                            <p>{(checkObject.payment)?.toLocaleString('en-US').replace(/,/g, ' ')}</p>
+                        </div>
+                        <form className={styles.modal__sale__body__form} onSubmit={handleSaleSubmit}>
+                            <div className={styles.modal__sale__body__form__top}>
+                                <label>
+                                    <p>Чегирма</p>
+                                    <input
+                                        type="number"
+                                        name="discount"
+                                        value={checkObject.total_discount}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    <p>Касса</p>
+                                    <input
+                                        className={styles.inpBack}
+                                        type="number"
+                                        name="cash"
+                                        value={formData.cash}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    <p>ТЎлов</p>
+                                    <input
+                                        type="number"
+                                        name="payment"
+                                        value={checkObject.payment}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                {
+                                    (type === "Карта") && (
+                                        <label>
+                                            <p>Карта</p>
+                                            <input
+                                                type="number"
+                                                name="humo"
+                                                value={formData.humo}
+                                                onChange={handleChange}
+                                            />
+                                        </label>
+                                    )
+                                }
+                                <label>
+                                    <p>К/Карта</p>
+                                    <input
+                                        type="number"
+                                        name="card"
+                                        value={card.amount}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                                <label>
+                                    <p>Жами</p>
+                                    <input
+                                        type="number"
+                                        name="total"
+                                        value={checkObject.total}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
+                            <div className={styles.modal__sale__body__form__bottom}>
+                                <span>
+                                    <p>Кешбек карта</p>
+                                    <button onClick={() => {
+                                        setDeCard(!deCard)
+                                    }} className={styles.saleAct} type="button">
+                                        <i className="fa-regular fa-credit-card"></i>
+                                    </button>
+                                </span>
+                                <span>
+                                    <p>Чек чиқариш</p>
+                                    <button type="submit">
+                                        <Image alt='' src={printer} />
+                                    </button>
+                                </span>
+                                <span>
+                                    {
+                                        type === "Нақд" ? (<p>Нақд савдо</p>) : type === "Карта" ? (<p>Картага савдо</p>) : (<p>Насия савдо</p>)
+                                    }
+                                    <button type="submit">
+                                        {
+                                            type === "Нақд" ? (<i className="fa-solid fa-money-bill-1"></i>) : type === "Карта" ? (<i className="fa-regular fa-credit-card"></i>) : (<i className="fa-solid fa-hand-holding-heart"></i>)
+                                        }
+                                    </button>
+                                </span>
+                                <span>
+                                    <p>Бекор қилиш</p>
+                                    <button onClick={() => {
+                                        closeSubmit()
+                                    }} type="button">
+                                        <i className="fa-solid fa-x"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             <div className={`${styles.modal} ${modal ? styles.actModal : ""}`}>
                 <div className={styles.modal__body}>
@@ -332,7 +573,7 @@ const Intro = () => {
                                 </span>
                             </div>
                             <span className={styles.modal__body__center__left__bottom}>
-                                <p>ҚолдиҚ</p>
+                                <p>Қолдик</p>
                                 <input
                                     type="text"
                                     name="quantity"
@@ -345,9 +586,10 @@ const Intro = () => {
                             <div className={styles.modal__body__center__right__left}>
                                 <input
                                     type="text"
-                                    name="additionalField1"
-                                    value={formData.additionalField1}
+                                    name="additionalField3"
+                                    value={formData.additionalField3}
                                     onChange={handleInputChange}
+                                    placeholder='Dona'
                                 />
                                 <div>
                                     <input
@@ -355,12 +597,14 @@ const Intro = () => {
                                         name="additionalField2"
                                         value={formData.additionalField2}
                                         onChange={handleInputChange}
+                                        placeholder='Kaseta'
                                     />
                                     <input
                                         type="text"
-                                        name="additionalField3"
-                                        value={formData.additionalField3}
+                                        name="additionalField1"
+                                        value={formData.additionalField1}
                                         onChange={handleInputChange}
+                                        placeholder='Pachka'
                                     />
                                 </div>
                             </div>
@@ -475,7 +719,10 @@ const Intro = () => {
                             <b>{(checkObject.total)?.toLocaleString('en-US').replace(/,/g, ' ')}</b>
                         </div>
                     </div>
-                    <button onClick={() => { setOrder([]) }} className={styles.intro__center__right__btn}>
+                    <button onClick={() => {
+                        setOrder([])
+                        closeSubmit()
+                    }} className={styles.intro__center__right__btn}>
                         <i className="fa-solid fa-xmark"></i>
                         Чекни ёпиш
                     </button>
@@ -483,7 +730,7 @@ const Intro = () => {
             </div>
 
             <div className={styles.intro__controls}>
-                <span>Тўловга: <p>{(checkObject.total)?.toLocaleString('en-US').replace(/,/g, ' ')}</p></span>
+                <span>Тўловга: <p>{(checkObject.payment)?.toLocaleString('en-US').replace(/,/g, ' ')}</p></span>
                 <form onSubmit={handleSearchFilter} className={styles.intro__controls__search}>
                     <button type='submit'>
                         <i className="fa-solid fa-magnifying-glass"></i>

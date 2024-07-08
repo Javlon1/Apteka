@@ -346,9 +346,10 @@ const Intro = () => {
                             <div className={styles.modal__body__center__right__left}>
                                 <input
                                     type="text"
-                                    name="additionalField1"
-                                    value={formData.additionalField1}
+                                    name="additionalField3"
+                                    value={formData.additionalField3}
                                     onChange={handleInputChange}
+                                    placeholder='Dona'
                                 />
                                 <div>
                                     <input
@@ -356,12 +357,14 @@ const Intro = () => {
                                         name="additionalField2"
                                         value={formData.additionalField2}
                                         onChange={handleInputChange}
+                                        placeholder='Kaseta'
                                     />
                                     <input
                                         type="text"
-                                        name="additionalField3"
-                                        value={formData.additionalField3}
+                                        name="additionalField1"
+                                        value={formData.additionalField1}
                                         onChange={handleInputChange}
+                                        placeholder='Pachka'
                                     />
                                 </div>
                             </div>
@@ -467,7 +470,11 @@ const Intro = () => {
                             <b>{(checkObject.total)?.toLocaleString('en-US').replace(/,/g, ' ')}</b>
                         </div>
                     </div>
-                    <button onClick={() => { setOrder([]) }} className={styles.intro__center__right__btn}>
+                    <button onClick={() => {
+                        setOrder([])
+                        setDe(!de)
+                        setDataCheck(0)
+                    }} className={styles.intro__center__right__btn}>
                         <i className="fa-solid fa-rotate-left"></i>
                         Возврат қилиш
                     </button>

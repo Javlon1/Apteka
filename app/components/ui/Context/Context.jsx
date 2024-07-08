@@ -4,7 +4,10 @@ const Context = createContext()
 function Provider({ children }) {
     const [url] = useState("https://apteka-ut54.onrender.com")
     const [order, setOrder] = useState([])
+    const [type, setType] = useState('')
     const [error, setError] = useState(false)
+    const [sale, setSale] = useState(false)
+
 
     const [checkNumber, setCheckNumber] = useState(() => {
         const storedCheckNumber = typeof window !== 'undefined' ? window.localStorage.getItem('checkNumber') : null;
@@ -29,9 +32,9 @@ function Provider({ children }) {
         }
     }, [auth_token]);
 
-    
+
     return (
-        <Context.Provider value={{ url, checkNumber, setCheckNumber, order, setOrder, error, setError, auth_token, setAuth_token }}>
+        <Context.Provider value={{ url, checkNumber, setCheckNumber, order, setOrder, error, setError, auth_token, setAuth_token, sale, setSale, type, setType }}>
             {children}
         </Context.Provider>
     )

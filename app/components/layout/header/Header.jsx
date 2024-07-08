@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const Header = () => {
-    const { url, setAuth_token, auth_token } = useContext(Context);
+    const { url, setAuth_token, auth_token, setSale, setType } = useContext(Context);
     const [dateTime, setDateTime] = useState(new Date());
     const { pathname } = useRouter();
     const router = useRouter();
@@ -75,14 +75,20 @@ const Header = () => {
 
     const handleF1 = () => {
         console.log('Нақд');
+        setType("Нақд")
+        setSale(true)
     };
 
     const handleF2 = () => {
         console.log('Карта');
+        setType("Карта")
+        setSale(true)
     };
 
     const handleF3 = () => {
         console.log('Насия');
+        setType("Насия")
+        setSale(true)
     };
 
     const handleKeyDown = (event) => {
@@ -131,7 +137,7 @@ const Header = () => {
             });
 
             const data = await response.json();
-            
+
             if (data.message) {
                 // setDe(!de)
                 setModal(false);
@@ -210,24 +216,29 @@ const Header = () => {
             </header>
             {/* sidebar start */}
             <aside className={styles.sidebar}>
-                <div className={styles.sidebar__top}>
-                    <button onClick={handleF1}>
-                        <i className="fa-solid fa-money-bill"></i>
-                        Нақд F1
-                    </button>
-                    <button onClick={handleF2}>
-                        <i className="fa-regular fa-credit-card"></i>
-                        Карта F2
-                    </button>
-                    <button onClick={handleF3}>
-                        <i className="fa-solid fa-hand-holding-heart"></i>
-                        Насия F3
-                    </button>
-                </div>
+                {
+                    (pathname === '/') && (
+                        <div className={styles.sidebar__top}>
+                            <button onClick={handleF1}>
+                                <i className="fa-solid fa-money-bill"></i>
+                                Нақд F1
+                            </button>
+                            <button onClick={handleF2}>
+                                <i className="fa-regular fa-credit-card"></i>
+                                Карта F2
+                            </button>
+                            <button onClick={handleF3}>
+                                <i className="fa-solid fa-hand-holding-heart"></i>
+                                Насия F3
+                            </button>
+                        </div>
+                    )
+                }
                 <div className={styles.sidebar__bottom}>
                     <div className={styles.sidebar__bottom__items}>
                         {
-                            headerData?.map((item) => (
+
+                            (pathname === '/' || pathname === '/profil' || pathname === "/return") && (headerData?.map((item) => (
                                 <Link
                                     key={item.id}
                                     className={`${pathname === item.link ? styles.active : ""}`}
@@ -238,10 +249,10 @@ const Header = () => {
                                         {item.nav}
                                     </p>
                                 </Link>
-                            ))
+                            )))
                         }
                         {
-                            (pathname === '/profil') && (
+                            (pathname === '/profil' || pathname === "/settings" || pathname === "/workers" || pathname === "/chakana-savdo" || pathname === "/product" || pathname === "/report" || pathname === "/statistic") && (
                                 <button onClick={() => setModal(true)} className={styles.qwe}>
                                     <i className="fa-solid fa-plus"></i>
                                     <p>
@@ -252,12 +263,17 @@ const Header = () => {
                         }
                     </div>
                     <div className={styles.sidebar__bottom__items}>
-                        <button onClick={() => {
-                            router.push('/return');
-                        }}>
-                            <i className="fa-solid fa-rotate-left"></i>
-                            Возврат
-                        </button>
+                        {
+                            (pathname === '/' || pathname === "/return") && (
+
+                                <button onClick={() => {
+                                    router.push('/return');
+                                }}>
+                                    <i className="fa-solid fa-rotate-left"></i>
+                                    Возврат
+                                </button>
+                            )
+                        }
                         <button
                             onClick={() => {
                                 logOut()

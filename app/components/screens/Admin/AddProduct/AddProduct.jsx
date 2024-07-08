@@ -9,6 +9,7 @@ const AddProduct = () => {
     const { url, auth_token } = React.useContext(Context);
     const [activeLeft, setActiveLeft] = React.useState('Товар кирими');
     const [dataType, setDataType] = React.useState([]);
+    const [loader, setLoader] = React.useState(false);
 
     const router = useRouter()
 
@@ -51,7 +52,6 @@ const AddProduct = () => {
             }
         }
     ];
-
     const [formData, setFormData] = React.useState({
         productName: '',
         productType: '',
@@ -72,10 +72,29 @@ const AddProduct = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+        const updatedFormData = { ...formData, [name]: value };
+
+        if (name === 'basePrice' || name === 'margin') {
+            const basePrice = parseFloat(updatedFormData.basePrice) || 0;
+            const margin = parseFloat(updatedFormData.margin) || 0;
+            const salePrice = basePrice * (1 + margin / 100);
+            updatedFormData.salePrice = salePrice.toFixed(2);
+            updatedFormData.salePricePercentage = margin.toFixed(2);
+        } else if (name === 'salePrice') {
+            const basePrice = parseFloat(formData.basePrice) || 0;
+            const salePrice = parseFloat(value) || 0;
+            const margin = ((salePrice - basePrice) / basePrice) * 100;
+            updatedFormData.margin = margin.toFixed(2);
+            updatedFormData.salePricePercentage = margin.toFixed(2);
+        } else if (name === 'salePricePercentage') {
+            const basePrice = parseFloat(formData.basePrice) || 0;
+            const margin = parseFloat(value) || 0;
+            const salePrice = basePrice * (1 + margin / 100);
+            updatedFormData.salePrice = salePrice.toFixed(2);
+            updatedFormData.margin = margin.toFixed(2);
+        }
+
+        setFormData(updatedFormData);
     };
 
     ///// get shifts Start
@@ -115,6 +134,7 @@ const AddProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoader(true);
 
         const fullUrl = `${url}/admin/product/create/`;
 
@@ -145,9 +165,10 @@ const AddProduct = () => {
             });
 
             const data = await response.json();
-            
 
-            if (data.message) {
+            console.log(data);
+
+            if (data.success === "success") {
                 setFormData({
                     productName: '',
                     productType: '',
@@ -168,6 +189,8 @@ const AddProduct = () => {
             }
         } catch (error) {
             console.error('Error during POST request:', error);
+        } finally {
+            setLoader(false);
         }
     };
 
@@ -391,10 +414,18 @@ const AddProduct = () => {
                                 <i className="fa-regular fa-trash-can"></i>
                                 Тозалаш
                             </b>
-                            <button type="submit">
-                                <i className="fa-solid fa-file-medical"></i>
-                                Сақлаш
-                            </button>
+                            {
+                                loader ? (
+                                    <b className={styles.btn}>
+                                        <div className={styles.loader}></div>
+                                    </b>
+                                ) : (
+                                    <button type="submit">
+                                        <i className="fa-solid fa-file-medical"></i>
+                                        Сақлаш
+                                    </button>
+                                )
+                            }
                         </div>
                     </div>
                 </form>
