@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Head from 'next/head'
-import LoginIntro from '@/app/components/screens/login/Login';
+import Intro from '@/app/components/screens/home/Intro';
 
 const Login = () => {
 
@@ -21,11 +21,11 @@ const Login = () => {
                 <meta property="og:site_name" content="" /> // Название сайта
                 <meta property="og:locale" content="ru_RU" />
 
-                <title>Login</title>
+                <title>Home</title>
             </Head>
 
             <main>
-                <LoginIntro />
+                <Intro />
             </main>
         </>
     )

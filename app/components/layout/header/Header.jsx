@@ -33,13 +33,13 @@ const Header = () => {
 
         setAuth_token("")
 
-        router.push('/login');
+        router.push('/');
     }
 
     const [headerData] = useState([
         {
             id: 1,
-            link: '/',
+            link: '/login',
             nav: 'Асосий',
             icon: "fa-solid fa-house"
         },
@@ -217,7 +217,7 @@ const Header = () => {
             {/* sidebar start */}
             <aside className={styles.sidebar}>
                 {
-                    (pathname === '/') && (
+                    (pathname === '/login') && (
                         <div className={styles.sidebar__top}>
                             <button onClick={handleF1}>
                                 <i className="fa-solid fa-money-bill"></i>
@@ -238,7 +238,7 @@ const Header = () => {
                     <div className={styles.sidebar__bottom__items}>
                         {
 
-                            (pathname === '/' || pathname === '/profil' || pathname === "/return") && (headerData?.map((item) => (
+                            (pathname === '/login' || pathname === '/profil' || pathname === "/return") && (headerData?.map((item) => (
                                 <Link
                                     key={item.id}
                                     className={`${pathname === item.link ? styles.active : ""}`}
@@ -264,7 +264,7 @@ const Header = () => {
                     </div>
                     <div className={styles.sidebar__bottom__items}>
                         {
-                            (pathname === '/' || pathname === "/return") && (
+                            (pathname === '/login' || pathname === "/return") && (
 
                                 <button onClick={() => {
                                     router.push('/return');

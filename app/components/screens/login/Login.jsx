@@ -46,7 +46,7 @@ const LoginIntro = () => {
                 if (data.is_admin && activeUser == 1) {
                     router.push('/statistic');
                 } else if (!data.is_admin && activeUser == 0) {
-                    router.push('/')
+                    router.push('/login')
                 }
             }
         } catch (error) {
