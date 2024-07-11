@@ -644,7 +644,7 @@ const Intro = () => {
                     <i className="fa-regular fa-file-lines"></i>
                     Чек N{dataCheck}
                 </p>
-                <Link href={'/'}
+                <Link href={'/login'}
                     onClick={() => {
                         setDe(!de)
                         setDataCheck(0)
