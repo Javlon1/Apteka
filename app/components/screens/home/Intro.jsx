@@ -108,7 +108,7 @@ const Intro = () => {
     // Date Format
 
     // Data-Table Start
-    const [itemsPerPage, setItemsPerPage] = useState(5);
+    const [itemsPerPage, setItemsPerPage] = useState(7);
     const [currentPage, setCurrentPage] = useState(1);
     const [filterText, setFilterText] = useState('');
 
@@ -406,7 +406,7 @@ const Intro = () => {
             setSale(false)
         }
     }
-
+    console.log(currentData);
     return (
         <section className={styles.intro}>
             <div
@@ -685,7 +685,25 @@ const Intro = () => {
                                                 </button>
                                             </td>
                                             <td>{item.sale_product_items.name}</td>
-                                            <td>{(item.amount_of_box)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>
+                                                <p>
+                                                    {
+                                                        (item.amount_of_box > 0) && (
+                                                            `${(item.amount_of_box)?.toLocaleString('en-US').replace(/,/g, ' ')}-pachka, `
+                                                        )
+                                                    }
+                                                    {
+                                                        (item.amount_of_package > 0) && (
+                                                            `${(item.amount_of_package)?.toLocaleString('en-US').replace(/,/g, ' ')}-kaseta, `
+                                                        )
+                                                    }
+                                                    {
+                                                        (item.amount_from_package > 0) && (
+                                                            `${(item.amount_from_package)?.toLocaleString('en-US').replace(/,/g, ' ')}-dona`
+                                                        )
+                                                    }
+                                                </p>
+                                            </td>
                                             <td>{(item.total_sum)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                             <td>{item.sale_product_items.expiry_date}</td>
                                             <td>{(item.sale_product_items.amount_in_box)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
@@ -799,7 +817,19 @@ const Intro = () => {
                                                 )}
                                             </td>
                                             <td>{item.name}</td>
-                                            <td>{(item.box)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
+                                            <td>
+                                                <p>
+                                                    {
+                                                        (item.boxes_left > 0) && `${(item.boxes_left)?.toLocaleString('en-US').replace(/,/g, ' ')}-pachka `
+                                                    }
+                                                    {
+                                                        (item.packages_left > 0) && `${(item.packages_left)?.toLocaleString('en-US').replace(/,/g, ' ')}-kaseta `
+                                                    }
+                                                    {
+                                                        (item.units_left > 0) && `${(item.units_left)?.toLocaleString('en-US').replace(/,/g, ' ')}-dona `
+                                                    }
+                                                </p>
+                                            </td>
                                             <td>{(item.sale_price)?.toLocaleString('en-US').replace(/,/g, ' ')}</td>
                                             <td>{item.produced_location}</td>
                                             <td>{item.expiry_date}</td>
