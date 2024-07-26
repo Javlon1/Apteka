@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Image from 'next/image';
-import styles from './AddProduct.module.scss';
+import Image from 'next/image'
+import styles from './AddProduct.module.scss'
 import { Context } from '@/app/components/ui/Context/Context';
 import { useRouter } from 'next/router';
 import Clipboard from '../../../../../public/img/Clipboard.png';
@@ -10,46 +10,52 @@ const AddProduct = () => {
     const [activeLeft, setActiveLeft] = React.useState('Товар кирими');
     const [dataType, setDataType] = React.useState([]);
     const [loader, setLoader] = React.useState(false);
-    const [scanResult, setScanResult] = React.useState('');
-    const inputQrcodeRef = React.useRef(null);
 
-    React.useEffect(() => {
-        const handleScan = (event) => {
-            if (event.target === inputQrcodeRef.current) {
-                setScanResult(event.target.value);
-            }
-        };
+    const router = useRouter()
 
-        document.addEventListener('input', handleScan);
-
-        if (inputQrcodeRef.current) {
-            inputQrcodeRef.current.focus();
-        }
-
-        return () => {
-            document.removeEventListener('input', handleScan);
-        };
-    }, []);
-
-    React.useEffect(() => {
-        setFormData(prevState => ({ ...prevState, barcode: scanResult }));
-    }, [scanResult]);
-
-    const router = useRouter();
-
+    // Функции для левого списка
     const leftFunctions = [
-        { label: 'Статистика', action: () => router.push('/statistic') },
-        { label: 'Ҳисобот', action: () => router.push('/report') },
-        { label: 'Товар кирими', action: () => router.push('/product') },
-        { label: 'Чакана савдо', action: () => router.push('/chakana-savdo') },
-        { label: 'Ишчилар', action: () => router.push('/workers') },
-        { label: 'Созламалар', action: () => router.push('/settings') }
+        {
+            label: 'Статистика',
+            action: () => {
+                router.push('/statistic')
+            }
+        },
+        {
+            label: 'Ҳисобот',
+            action: () => {
+                router.push('/report')
+            }
+        },
+        {
+            label: 'Товар кирими',
+            action: () => {
+                router.push('/product')
+            }
+        },
+        {
+            label: 'Чакана савдо',
+            action: () => {
+                router.push('/chakana-savdo')
+            }
+        },
+        {
+            label: 'Ишчилар',
+            action: () => {
+                router.push('/workers')
+            }
+        },
+        {
+            label: 'Созламалар',
+            action: () => {
+                router.push('/settings')
+            }
+        }
     ];
-
     const [formData, setFormData] = React.useState({
         productName: '',
         productType: '',
-        barcode: scanResult,
+        barcode: '',
         quantity: '',
         boxes: '',
         items: '',
@@ -91,6 +97,7 @@ const AddProduct = () => {
         setFormData(updatedFormData);
     };
 
+    ///// get shifts Start
     React.useEffect(() => {
         const fullUrl = `${url}/admin/category/`;
 
@@ -109,8 +116,9 @@ const AddProduct = () => {
                 }
 
                 const data = await response.json();
+
                 if (data) {
-                    setDataType(data);
+                    setDataType(data)
                 } else {
                     console.error('Ошибка: Некорректные данные получены от сервера.');
                 }
@@ -121,7 +129,8 @@ const AddProduct = () => {
         };
 
         fetchData();
-    }, [url, auth_token]);
+    }, []);
+    ///// get shifts End
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -138,24 +147,27 @@ const AddProduct = () => {
                 },
                 body: JSON.stringify({
                     name: formData.productName,
-                    type_id: parseInt(formData.productType, 10),
+                    type_id: parseInt(formData.productType),
                     serial_number: formData.barcode,
-                    box: parseInt(formData.quantity, 10),
-                    amount_in_box: parseInt(formData.boxes, 10),
-                    amount_in_package: parseInt(formData.items, 10),
+                    box: parseInt(formData.quantity),
+                    amount_in_box: parseInt(formData.boxes),
+                    amount_in_package: parseInt(formData.items),
                     base_price: parseFloat(formData.basePrice),
                     sale_price: parseFloat(formData.salePrice),
-                    extra_price_in_percent: parseInt(formData.margin, 10),
-                    sale_price_in_percent: parseInt(formData.salePricePercentage, 10),
+                    extra_price_in_percent: parseInt(formData.margin),
+                    sale_price_in_percent: parseInt(formData.salePricePercentage),
                     expiry_date: formData.discount,
                     discount_price: parseFloat(formData.discountPrice),
-                    score: parseInt(formData.labeling, 10),
+                    score: parseInt(formData.labeling),
                     overall_price: parseFloat(formData.amount),
                     produced_location: formData.madeIn,
                 }),
             });
 
             const data = await response.json();
+
+            console.log(data);
+
             if (data.success === "success") {
                 setFormData({
                     productName: '',
@@ -173,13 +185,10 @@ const AddProduct = () => {
                     labeling: '',
                     amount: '',
                     madeIn: ""
-                });
-                setScanResult("");
-            } else {
-                console.error('Ошибка: ', data);
+                })
             }
         } catch (error) {
-            console.error('Ошибка при запросе данных:', error);
+            console.error('Error during POST request:', error);
         } finally {
             setLoader(false);
         }
@@ -211,7 +220,7 @@ const AddProduct = () => {
                         <input
                             className={styles.addProduct__center__form__top__inp}
                             type="text"
-                            placeholder="Product Name"
+                            placeholder="Махсулот номи"
                             name="productName"
                             value={formData.productName}
                             onChange={handleChange}
@@ -237,17 +246,25 @@ const AddProduct = () => {
                             </label>
                         </div>
                         <div className={styles.addProduct__center__form__top__list}>
-                            <div className={styles.addProduct__center__form__top__list__item2}>
+                            <div className={styles.addProduct__center__form__top__list__item1}>
                                 <label htmlFor="barcode">
                                     <p>Штрих коди</p>
-                                    <input
-                                        ref={inputQrcodeRef}
-                                        type="text"
-                                        placeholder={`QR-Code Сканерлаш`}
-                                        value={scanResult} 
-                                        onChange={(e) => setScanResult(e.target.value)} 
-                                    />
+                                    <select
+                                        name="barcode"
+                                        id="barcode"
+                                        value={formData.barcode}
+                                        onChange={handleChange}
+                                        required
+                                    >
+                                        <option value="">Select Barcode</option>
+                                        <option value="barcode1">Barcode 1</option>
+                                        <option value="barcode2">Barcode 2</option>
+                                    </select>
                                 </label>
+                                <b>
+                                    <i className="fa-solid fa-qrcode"></i>
+                                    Сканерлаш
+                                </b>
                             </div>
                             <div className={styles.addProduct__center__form__top__list__item2}>
                                 <label htmlFor="quantity">
@@ -366,7 +383,7 @@ const AddProduct = () => {
                                 />
                             </label>
                             <label htmlFor="madeIn">
-                                <p>ишлаб чикарилган жойи</p>
+                                <p>ишлаб чикарувчи</p>
                                 <input
                                     name="madeIn"
                                     type="text"
@@ -412,9 +429,10 @@ const AddProduct = () => {
                         </div>
                     </div>
                 </form>
+
             </div>
         </section>
-    );
-};
+    )
+}
 
 export default AddProduct;

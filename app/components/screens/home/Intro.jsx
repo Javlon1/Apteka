@@ -4,6 +4,8 @@ import styles from './Intro.module.scss';
 import { Context } from '@/app/components/ui/Context/Context';
 import printer from '../../../../public/img/printer.png'
 import Image from 'next/image';
+import { Html5QrcodeScanner } from 'html5-qrcode';
+
 
 const Intro = () => {
     const { order, setOrder, url, auth_token, sale, setSale, type } = useContext(Context);
@@ -17,7 +19,6 @@ const Intro = () => {
     const [dataItems, setDataItems] = useState([])
     const [checkObject, setCheckObject] = useState([])
     const [totalAmount, setTotalAmount] = useState(0);
-
     const [formSaleData, setFormSaleData] = useState({
         discount: '',
         cash: '',
@@ -26,6 +27,41 @@ const Intro = () => {
         card: card.amount,
         total: '',
     });
+
+    const [scanResult, setScanResult] = useState('');
+    const inputQrcodeRef = useRef(null);
+
+    useEffect(() => {
+        const handleScan = (event) => {
+            if (event.target === inputQrcodeRef.current) {
+                const newScanResult = event.target.value;
+                setScanResult(newScanResult);
+            }
+        };
+
+        document.addEventListener('input', handleScan);
+
+        if (inputQrcodeRef.current) {
+            inputQrcodeRef.current.focus();
+        }
+
+
+        return () => {
+            document.removeEventListener('input', handleScan);
+        };
+    }, [inputQrcodeRef]);
+
+
+    useEffect(() => {
+        if (scanResult) {
+            const item = data.find(item => item.serial_number === scanResult);
+            if (item) {
+                setAddItem(item);
+                setModal(true);
+            }
+        }
+        setScanResult("")
+    }, [scanResult, data]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -70,7 +106,7 @@ const Intro = () => {
                 }
 
                 const data = await response.json();
-                console.log(data);
+
                 if (data) {
                     setData(data.products)
                     setDataCheck(data.check.id)
@@ -154,7 +190,6 @@ const Intro = () => {
 
     const handleSearchFilter = (e) => {
         e.preventDefault();
-        console.log(`ok-${search}`);
 
         setFilterText(search);
         setCurrentPage(1);
@@ -366,8 +401,6 @@ const Intro = () => {
 
             const data = await response.json();
 
-            console.log(data);
-
             if (data.message) {
                 setDataCheck(0)
                 setDe(!de)
@@ -394,8 +427,6 @@ const Intro = () => {
 
             const data = await response.json();
 
-            console.log(data);
-
             if (data.message) {
                 setDe(!de)
                 setDataCheck(0)
@@ -406,7 +437,7 @@ const Intro = () => {
             setSale(false)
         }
     }
-    console.log(currentData);
+
     return (
         <section className={styles.intro}>
             <div
@@ -620,7 +651,7 @@ const Intro = () => {
                     </div>
                     <div className={styles.modal__body__footer}>
                         <div className={styles.modal__body__footer__top}>
-                            <p>тасдиҚлаш</p>
+                            <p>тасдиклаш</p>
                             <button onClick={handleSubmit}>
                                 <i className="fa-solid fa-check"></i>
                             </button>
@@ -654,6 +685,13 @@ const Intro = () => {
                     Янги чек очиш
                 </Link>
             </div>
+
+            <input
+                ref={inputQrcodeRef}
+                type="text"
+                style={{ opacity: 0, position: 'absolute' }}
+                placeholder="Сканируйте QR-код здесь"
+            />
 
             <div className={styles.intro__center}>
                 <div className={styles.dataTable}>

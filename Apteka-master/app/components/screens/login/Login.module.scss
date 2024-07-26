@@ -1,0 +1,173 @@
+@import "../../../assets/variables";
+
+.login {
+    min-width: 100%;
+    min-height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+    background-color: $white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 700px;
+
+        &__top {
+            display: flex;
+            align-items: center;
+            height: 70px;
+
+            &__list {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+
+                &__item {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    background-color: $white;
+                    box-shadow: $shadow;
+                    padding: 5px 10px;
+                    border-radius: $radius;
+                    cursor: pointer;
+                    transition: $transition;
+
+                    &:hover {
+                        transform: scale(0.95);
+                    }
+
+                    i {
+                        font-size: 1.1rem;
+                        color: $gary;
+                    }
+
+                    p {
+                        color: $black;
+                        font-weight: 600;
+                        font-size: 1.1rem;
+                    }
+                }
+            }
+        }
+
+        &__center {
+            border: 1px solid #00000033;
+            padding: 20px 0 20px 10px;
+            border-radius: $radius;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+
+            &__top {
+                width: 100%;
+                border: 1px solid #00000040;
+
+                p {
+                    width: 100%;
+                    padding: 10px;
+                    color: $black;
+                    font-weight: 500;
+                    font-size: $xs;
+
+                    &:first-child {
+                        color: $white;
+                        font-size: $xl;
+                        font-weight: 600;
+                        background-color: #4256B9;
+                    }
+                }
+            }
+
+            .text {
+                color: #F45713;
+                font-size: $xs;
+                line-height: 20px;
+                width: 60%;
+                text-align: center;
+            }
+
+            form {
+                width: 90%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+
+                div {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    width: 100%;
+
+                    label {
+                        display: flex;
+                        align-items: center;
+                        gap: 20px;
+                        width: 100%;
+
+                        p {
+                            width: 100px;
+                            color: #585454;
+                            font-size: $xs;
+                        }
+
+                        input {
+                            width: 100%;
+                            padding: 1rem;
+                            border-radius: 5px;
+                            border: 1px solid $black;
+                        }
+                    }
+                }
+
+                button {
+                    padding: .5rem 3rem;
+                    font-weight: 600;
+                    font-size: 1.2rem;
+                    background-color: $green;
+                    border: 2px solid #00000040;
+                    color: $white;
+                    border-radius: 5px;
+                    cursor: pointer;
+
+                    &:hover {
+                        @include scale
+                    }
+                }
+
+                .btn {
+                    padding: .5rem 3rem;
+                    font-weight: 600;
+                    font-size: 1.2rem;
+                    background-color: $green;
+                    border: 2px solid #00000040;
+                    color: $white;
+                    border-radius: 5px;
+                    cursor: no-drop;
+                }
+
+                .loader {
+                    @include loader
+                }
+            }
+        }
+    }
+}
+
+
+.active {
+    background-color: #ECE8E8 !important;
+    box-shadow: 0px 4px 4px 0px #00000040 inset !important;
+
+    &:hover {
+        transform: scale(1) !important;
+    }
+}

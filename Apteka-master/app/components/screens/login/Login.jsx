@@ -96,6 +96,7 @@ const LoginIntro = () => {
                                 <p>Логин</p>
                                 <input
                                     id="login"
+                                    placeholder='Логин'
                                     type="text"
                                     value={login}
                                     required
@@ -106,6 +107,7 @@ const LoginIntro = () => {
                                 <p>Парол</p>
                                 <input
                                     id="password"
+                                    placeholder='Парол'
                                     type="text"
                                     value={password}
                                     required

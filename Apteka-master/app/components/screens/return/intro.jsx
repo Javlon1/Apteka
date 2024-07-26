@@ -380,7 +380,7 @@ const Intro = () => {
                     </div>
                     <div className={styles.modal__body__footer}>
                         <div className={styles.modal__body__footer__top}>
-                            <p>тасдиклаш</p>
+                            <p>тасдиҚлаш</p>
                             <button onClick={handleSubmit}>
                                 <i className="fa-solid fa-check"></i>
                             </button>
