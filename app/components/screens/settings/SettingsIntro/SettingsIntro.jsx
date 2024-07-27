@@ -590,7 +590,7 @@ const SettingsIntro = () => {
 
                     <div>
                         <div className={styles.header}>
-                            <p>смена кушиш</p>
+                            <p>Смена кушиш</p>
                         </div>
 
                         <form onSubmit={handleAddShiftSubmit}>
@@ -612,12 +612,12 @@ const SettingsIntro = () => {
 
                     <div>
                         <div className={styles.header}>
-                            <p>махсулот категорияси</p>
+                            <p>Махсулот категорияси</p>
                         </div>
 
                         <form onSubmit={handleAddCategorySubmit}>
                             <label htmlFor="categoryName">
-                                <p>категория номи:</p>
+                                <p>Категория номи:</p>
                                 <input
                                     type="text"
                                     id="categoryName"
@@ -635,12 +635,12 @@ const SettingsIntro = () => {
 
                     <div>
                         <div className={styles.header}>
-                            <p>ишчиларга ойлик</p>
+                            <p>Ишчиларга ойлик</p>
                         </div>
 
                         <form onSubmit={handleAddSalarySubmit}>
                             <label htmlFor="worker">
-                                <p>ишчи:</p>
+                                <p>Ишчи:</p>
                                 <select name="worker" id="worker" value={formData.worker} onChange={handleInputChange} required>
                                     <option value="">Выберите ишчи</option>
                                     {
@@ -651,7 +651,7 @@ const SettingsIntro = () => {
                                 </select>
                             </label>
                             <label htmlFor="workerSalary">
-                                <p>ишчини пули:</p>
+                                <p>Ишчини пули:</p>
                                 <input
                                     type="number"
                                     id="workerSalary"
@@ -674,7 +674,7 @@ const SettingsIntro = () => {
 
                         <form onSubmit={handleAddCashbackCardSubmit}>
                             <label htmlFor="firstName">
-                                <p>исми:</p>
+                                <p>Исми:</p>
                                 <input
                                     type="text"
                                     id="firstName"
@@ -685,7 +685,7 @@ const SettingsIntro = () => {
                                 />
                             </label>
                             <label htmlFor="lastName">
-                                <p>фамилияси:</p>
+                                <p>Фамилияси:</p>
                                 <input
                                     type="text"
                                     id="lastName"
@@ -696,7 +696,7 @@ const SettingsIntro = () => {
                                 />
                             </label>
                             <label htmlFor="phoneNumberr">
-                                <p>телефон раками:</p>
+                                <p>Телефон раками:</p>
                                 <input
                                     type="text"
                                     id="phoneNumberr"
@@ -714,7 +714,7 @@ const SettingsIntro = () => {
 
                     <div>
                         <div className={styles.header}>
-                            <p>менинг аптекам</p>
+                            <p>Менинг аптекам</p>
                         </div>
 
                         <form onSubmit={handleGeneralSettingsSubmit}>
@@ -731,6 +731,7 @@ const SettingsIntro = () => {
                             <label htmlFor="logoFile">
                                 <p>Логотип:</p>
                                 <input
+                                className={styles.logoFile}
                                     type="file"
                                     id="logoFile"
                                     name="logoFile"

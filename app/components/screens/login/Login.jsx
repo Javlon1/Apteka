@@ -80,7 +80,7 @@ const LoginIntro = () => {
                 </div>
                 <div className={styles.login__body__center}>
                     <div className={styles.login__body__center__top}>
-                        <p>USG Darmon - Mezana Pharm</p>
+                        <p>Darmon - Mezana Pharm</p>
                         {
                             activeUser === 0 ? (
                                 <p>Сотувчи профилига кириш</p>

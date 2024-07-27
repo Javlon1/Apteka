@@ -211,7 +211,7 @@ const AddProduct = () => {
                         <input
                             className={styles.addProduct__center__form__top__inp}
                             type="text"
-                            placeholder="Product Name"
+                            placeholder="Махсулот номи"
                             name="productName"
                             value={formData.productName}
                             onChange={handleChange}
@@ -244,8 +244,8 @@ const AddProduct = () => {
                                         ref={inputQrcodeRef}
                                         type="text"
                                         placeholder={`QR-Code Сканерлаш`}
-                                        value={scanResult} 
-                                        onChange={(e) => setScanResult(e.target.value)} 
+                                        value={scanResult}
+                                        onChange={(e) => setScanResult(e.target.value)}
                                     />
                                 </label>
                             </div>
@@ -343,7 +343,7 @@ const AddProduct = () => {
                         </div>
                     </div>
                     <div className={styles.addProduct__center__form__bottom}>
-                        <b className={styles.addProduct__center__form__bottom__title}>чакана савдo</b>
+                        <b className={styles.addProduct__center__form__bottom__title}>Чакана савдo</b>
                         <div className={styles.addProduct__center__form__bottom__list}>
                             <label htmlFor="labeling">
                                 <p>Балл</p>
@@ -366,7 +366,7 @@ const AddProduct = () => {
                                 />
                             </label>
                             <label htmlFor="madeIn">
-                                <p>ишлаб чикарилган жойи</p>
+                                <p>Ишлаб чикарилган жойи</p>
                                 <input
                                     name="madeIn"
                                     type="text"

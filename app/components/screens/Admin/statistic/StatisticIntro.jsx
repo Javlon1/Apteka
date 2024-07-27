@@ -5,6 +5,9 @@ import styles from './StatisticIntro.module.scss'
 import { Context } from '@/app/components/ui/Context/Context';
 import PieChart from '@/app/components/ui/PieChart/PieChart';
 import chart from "../../../../../public/img/chart.png"
+import revenue_chart from "../../../../../public/img/revenue_graph.png"
+import sale_chart from "../../../../../public/img/sale_graph.png"
+import worker_chart from "../../../../../public/img/worker_graph.png"
 import { useRouter } from 'next/router';
 
 
@@ -286,7 +289,6 @@ const StatisticIntro = () => {
             </div>
 
             <div className={styles.statisticIntro__body}>
-
                 <div className={styles.statisticIntro__body__left}>
                     <div className={styles.statisticIntro__body__left__top}>
                         <div className={styles.statisticIntro__body__left__top__chart}>
@@ -294,6 +296,7 @@ const StatisticIntro = () => {
                             <b>{dataChart.graph_objects?.overall_sum_of_sale}</b>
                             <p>+{dataChart.graph_objects?.sales_percent_change}%</p>
                             <Image
+                                width={250}
                                 src={chart}
                                 alt='Chart'
                                 priority
@@ -304,7 +307,8 @@ const StatisticIntro = () => {
                             <b>{dataChart.graph_objects?.overall_sum_of_profit}</b>
                             <p>+{dataChart.graph_objects?.profit_percent_change}%</p>
                             <Image
-                                src={chart}
+                                width={250}
+                                src={revenue_chart}
                                 alt='Chart'
                                 priority
                             />
@@ -314,7 +318,8 @@ const StatisticIntro = () => {
                             <b>{dataChart.graph_objects?.quantity_of_sales_current_month}</b>
                             <p>+{dataChart.graph_objects?.quantity_sales_percent_change}%</p>
                             <Image
-                                src={chart}
+                                width={250}
+                                src={sale_chart}
                                 alt='Chart'
                                 priority
                             />
@@ -324,7 +329,8 @@ const StatisticIntro = () => {
                             <b>{dataChart.graph_objects?.overall_sum_salaries_current_month}</b>
                             <p>+{dataChart.graph_objects?.salary_change_percent}%</p>
                             <Image
-                                src={chart}
+                                width={250}
+                                src={worker_chart}
                                 alt='Chart'
                                 priority
                             />
@@ -356,10 +362,9 @@ const StatisticIntro = () => {
                 </div>
 
                 <div className={styles.statisticIntro__body__right}>
-
                     <div className={styles.statisticIntro__body__right__top}>
                         <div className={styles.statisticIntro__body__right__top__header}>
-                            <p>ТОП 10 та сотилган товарлар</p>
+                            <p>Топ 10 та сотилган товарлар</p>
                         </div>
                         <div className={styles.statisticIntro__body__right__top__table}>
 
@@ -369,7 +374,7 @@ const StatisticIntro = () => {
                                         <th>Тўлиқ номи</th>
                                         <th>Миқдори</th>
                                         <th>Нархи</th>
-                                        <th>% улуши</th>
+                                        <th>% Улуши</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -385,7 +390,6 @@ const StatisticIntro = () => {
                                     }
                                 </tbody>
                             </table>
-
                         </div>
                     </div>
 

@@ -11,6 +11,9 @@ import { useRouter } from 'next/router';
 import ErrorMessage from '@/app/components/ui/Message/ErrorMessage/ErrorMessage';
 import PieChart from '@/app/components/ui/PieChart/PieChart';
 import chart from "../../../../../public/img/chart.png"
+import revenue_chart from "../../../../../public/img/revenue_graph.png"
+import sale_chart from "../../../../../public/img/sale_graph.png"
+import worker_chart from "../../../../../public/img/worker_graph.png"
 
 
 const dataTable = [
@@ -339,7 +342,7 @@ const ReportIntro = () => {
                     <b>{dataChart.graph_data?.overall_sum_of_profit}</b>
                     <p>+{dataChart.graph_data?.profit_percent_change}%</p>
                     <Image
-                        src={chart}
+                        src={revenue_chart}
                         alt='Chart'
                         priority
                     />
@@ -349,7 +352,7 @@ const ReportIntro = () => {
                     <b>{dataChart.graph_data?.nasiya_savdo}</b>
                     <p>+{dataChart.graph_data?.p}%</p>
                     <Image
-                        src={chart}
+                        src={sale_chart}
                         alt='Chart'
                         priority
                     />
@@ -359,7 +362,7 @@ const ReportIntro = () => {
                     <b>{dataChart.graph_data?.naqd_savdo}</b>
                     <p>+{dataChart.graph_data?.p}%</p>
                     <Image
-                        src={chart}
+                        src={worker_chart}
                         alt='Chart'
                         priority
                     />
@@ -369,7 +372,7 @@ const ReportIntro = () => {
                     <b>{dataChart.graph_data?.quantity_of_sales_current_month}</b>
                     <p>+{dataChart.graph_data?.quantity_sales_percent_change}%</p>
                     <Image
-                        src={chart}
+                        src={sale_chart}
                         alt='Chart'
                         priority
                     />
@@ -379,7 +382,7 @@ const ReportIntro = () => {
                     <b>{dataChart.graph_data?.overall_sum_salaries_current_month}</b>
                     <p>+{dataChart.graph_data?.salary_change_percent}%</p>
                     <Image
-                        src={chart}
+                        src={worker_chart}
                         alt='Chart'
                         priority
                     />
@@ -412,7 +415,7 @@ const ReportIntro = () => {
 
                 <div className={styles.reportIntro__bottom__table}>
                     <div className={styles.reportIntro__bottom__table__header}>
-                        <p>ТОП 10 та сотилган товарлар</p>
+                        <p>Топ 10 та сотилган товарлар</p>
                     </div>
                     <div className={styles.reportIntro__bottom__table__table}>
 
@@ -422,7 +425,7 @@ const ReportIntro = () => {
                                     <th>Тўлиқ номи</th>
                                     <th>Миқдори</th>
                                     <th>Нархи</th>
-                                    <th>% улуши</th>
+                                    <th>% Улуши</th>
                                 </tr>
                             </thead>
                             <tbody>

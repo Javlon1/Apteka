@@ -4,7 +4,7 @@ import styles from './Intro.module.scss';
 import { Context } from '@/app/components/ui/Context/Context';
 import printer from '../../../../public/img/printer.png'
 import Image from 'next/image';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+// import { Html5QrcodeScanner } from 'html5-qrcode';
 
 
 const Intro = () => {
@@ -40,16 +40,18 @@ const Intro = () => {
         };
 
         document.addEventListener('input', handleScan);
+        const inputElement = inputQrcodeRef.current;
 
         if (inputQrcodeRef.current) {
             inputQrcodeRef.current.focus();
+            inputElement.addEventListener('input', handleScan);
         }
 
 
         return () => {
             document.removeEventListener('input', handleScan);
         };
-    }, [inputQrcodeRef]);
+    }, [inputQrcodeRef, de]);
 
 
     useEffect(() => {
@@ -61,7 +63,7 @@ const Intro = () => {
             }
         }
         setScanResult("")
-    }, [scanResult, data]);
+    }, [scanResult, de]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -281,7 +283,7 @@ const Intro = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        // e.preventDefault();
 
         const fullUrl = `${url}/add_to_check/`;
 
@@ -303,6 +305,9 @@ const Intro = () => {
             });
 
             const data = await response.json();
+
+            setScanResult("");
+            inputQrcodeRef.current.value = '';
 
             if (data.message) {
                 setDe(!de)
@@ -438,6 +443,29 @@ const Intro = () => {
         }
     }
 
+    const handlePrint = () => {
+        const printWindow = window.open('', '', 'height=800,width=600');
+
+        printWindow.document.write('<html><head><title>Print</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write('body { font-family: Arial, sans-serif; padding: 1.5rem 1rem; }');
+        printWindow.document.write('.printer { margin: 0 auto; display: inline-block; }');
+        printWindow.document.write('</style>');
+        printWindow.document.write('</head><body>');
+        printWindow.document.write('<div class="printer">');
+        printWindow.document.write('<p>Darmon</p>');
+        printWindow.document.write('<p>dsasdadss</p>');
+        printWindow.document.write('<p>+998905251243</p>');
+        printWindow.document.write('<p>+998902059000</p>');
+        printWindow.document.write(`<b>${(checkObject.payment)?.toLocaleString('en-US').replace(/,/g, ' ')}</b>`);
+        printWindow.document.write('</div>');
+        printWindow.document.write('</body></html>');
+
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    };
+
     return (
         <section className={styles.intro}>
             <div
@@ -451,7 +479,7 @@ const Intro = () => {
                 <div className={styles.modal__sale}>
                     <div className={styles.modal__sale__header}>
                         <span>
-                            <p>ТЎлов</p>
+                            <p>Тўлов</p>
                             <i className="fa-solid fa-money-bill-1"></i>
                         </span>
                         <p onClick={() => setSale(false)}>
@@ -484,7 +512,7 @@ const Intro = () => {
                                     />
                                 </label>
                                 <label>
-                                    <p>ТЎлов</p>
+                                    <p>Тўлов</p>
                                     <input
                                         type="number"
                                         name="payment"
@@ -535,7 +563,7 @@ const Intro = () => {
                                 </span>
                                 <span>
                                     <p>Чек чиқариш</p>
-                                    <button type="submit">
+                                    <button type="submit" onClick={handlePrint}>
                                         <Image alt='' src={printer} />
                                     </button>
                                 </span>
@@ -652,7 +680,10 @@ const Intro = () => {
                     <div className={styles.modal__body__footer}>
                         <div className={styles.modal__body__footer__top}>
                             <p>тасдиклаш</p>
-                            <button onClick={handleSubmit}>
+                            <button onClick={() => {
+                                handleSubmit()
+                                setScanResult('')
+                            }}>
                                 <i className="fa-solid fa-check"></i>
                             </button>
                             <button onClick={() => { setModal(false) }}>
@@ -675,7 +706,7 @@ const Intro = () => {
                     <i className="fa-regular fa-file-lines"></i>
                     Чек N{dataCheck}
                 </p>
-                <Link href={'/login'}
+                {/* <Link href={'/login'}
                     onClick={() => {
                         setDe(!de)
                         setDataCheck(0)
@@ -683,7 +714,7 @@ const Intro = () => {
                 >
                     <i className="fa-solid fa-file-arrow-up"></i>
                     Янги чек очиш
-                </Link>
+                </Link> */}
             </div>
 
             <input

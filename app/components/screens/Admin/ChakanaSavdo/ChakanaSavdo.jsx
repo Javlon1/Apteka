@@ -282,7 +282,6 @@ const ChakanaSavdo = () => {
                 <table>
                     <thead>
                         <tr>
-                            <th></th>
                             <th>№</th>
                             <th>Сана</th>
                             <th>Тури</th>
@@ -301,10 +300,9 @@ const ChakanaSavdo = () => {
                         {
                             dataTable?.map((item) => (
                                 <tr key={item.sale_id}>
-                                    <td></td>
                                     <td>{item.sale_id}</td>
                                     <td>{item.date_added}</td>
-                                    <td>чакана савдо</td>
+                                    <td>Чакана савдо</td>
                                     <td>{item.person}</td>
                                     <td>{item.amount}</td>
                                     <td>{item.payment_type == "naqd" ? item.amount : 0}</td>
@@ -318,23 +316,6 @@ const ChakanaSavdo = () => {
                             ))
                         }
                     </tbody>
-                    {/* <tfoot>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>160.520.24</th>
-                            <th>160.520.24</th>
-                            <th>160.520.24</th>
-                            <th>160.520.24</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </tfoot> */}
                 </table>
             </div>
         </div>
