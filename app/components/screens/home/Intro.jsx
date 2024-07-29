@@ -311,7 +311,6 @@ const Intro = () => {
 
             setScanResult("");
             inputQrcodeRef.current.value = '';
-            setDiscountCard(null);
 
             if (data.message) {
                 setDe(!de)
@@ -350,7 +349,7 @@ const Intro = () => {
 
     useEffect(() => {
 
-        const fullUrl = `${url}/admin/card/?card_id=${discountCard}`;
+        const fullUrl = `${url}/admin/card/?card_id=${3}`; //discountCard
 
         const Cardhandler = async () => {
             try {
@@ -382,7 +381,7 @@ const Intro = () => {
         };
 
         Cardhandler();
-    }, [deCard, discountCard]);
+    }, [deCard]);
 
     const handleSaleSubmit = async (e) => {
         e.preventDefault();
@@ -398,7 +397,7 @@ const Intro = () => {
                 },
                 body: JSON.stringify({
                     check_id: dataCheck,
-                    discount_card_id: discountCard ? discountCard : 0,
+                    discount_card_id: 0,//discountCard ? discountCard :
                     from_discount_card: card.amount,
                     payment_type: type === "Нақд" ? "naqd" : type === "Карта" ? "plastik" : type === "Насия" ? "nasiya" : "",
                     discount: checkObject.total_discount,
@@ -483,7 +482,7 @@ const Intro = () => {
         };
 
         CheckPrintHandler();
-    }, [deCard, discountCard]);
+    }, [deCard]);
 
     const handlePrint = () => {
         const printWindow = window.open('', '', 'height=800,width=600');
