@@ -4,8 +4,6 @@ import styles from './Intro.module.scss';
 import { Context } from '@/app/components/ui/Context/Context';
 import printer from '../../../../public/img/printer.png'
 import Image from 'next/image';
-// import { Html5QrcodeScanner } from 'html5-qrcode';
-
 
 const Intro = () => {
     const { order, setOrder, url, auth_token, sale, setSale, type } = useContext(Context);
@@ -19,6 +17,7 @@ const Intro = () => {
     const [dataItems, setDataItems] = useState([])
     const [checkObject, setCheckObject] = useState([])
     const [totalAmount, setTotalAmount] = useState(0);
+
     const [formSaleData, setFormSaleData] = useState({
         discount: '',
         cash: '',
@@ -32,6 +31,10 @@ const Intro = () => {
     const inputQrcodeRef = useRef(null);
 
     useEffect(() => {
+
+        setScanResult("");
+        inputQrcodeRef.current.value = '';
+
         const handleScan = (event) => {
             if (event.target === inputQrcodeRef.current) {
                 const newScanResult = event.target.value;
@@ -308,6 +311,7 @@ const Intro = () => {
 
             setScanResult("");
             inputQrcodeRef.current.value = '';
+            setDiscountCard(null);
 
             if (data.message) {
                 setDe(!de)
@@ -346,7 +350,7 @@ const Intro = () => {
 
     useEffect(() => {
 
-        const fullUrl = `${url}/admin/card/?card_id=3`;
+        const fullUrl = `${url}/admin/card/?card_id=${discountCard}`;
 
         const Cardhandler = async () => {
             try {
@@ -378,7 +382,7 @@ const Intro = () => {
         };
 
         Cardhandler();
-    }, [deCard]);
+    }, [deCard, discountCard]);
 
     const handleSaleSubmit = async (e) => {
         e.preventDefault();
@@ -394,7 +398,7 @@ const Intro = () => {
                 },
                 body: JSON.stringify({
                     check_id: dataCheck,
-                    discount_card_id: 3,
+                    discount_card_id: discountCard ? discountCard : 0,
                     from_discount_card: card.amount,
                     payment_type: type === "Нақд" ? "naqd" : type === "Карта" ? "plastik" : type === "Насия" ? "nasiya" : "",
                     discount: checkObject.total_discount,
@@ -443,6 +447,44 @@ const Intro = () => {
         }
     }
 
+    const [ckeckPrint, setCheckPrint] = useState([]);
+
+    useEffect(() => {
+
+        const fullUrl = `${url}/check_layout`;
+
+        const CheckPrintHandler = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+
+                    setCheckPrint(data)
+
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        CheckPrintHandler();
+    }, [deCard, discountCard]);
+
     const handlePrint = () => {
         const printWindow = window.open('', '', 'height=800,width=600');
 
@@ -450,13 +492,16 @@ const Intro = () => {
         printWindow.document.write('<style>');
         printWindow.document.write('body { font-family: Arial, sans-serif; padding: 1.5rem 1rem; }');
         printWindow.document.write('.printer { margin: 0 auto; display: inline-block; }');
+        printWindow.document.write('img { width: 100px; height: auto; margin-bottom: 1rem; }');
         printWindow.document.write('</style>');
         printWindow.document.write('</head><body>');
         printWindow.document.write('<div class="printer">');
-        printWindow.document.write('<p>Darmon</p>');
-        printWindow.document.write('<p>dsasdadss</p>');
-        printWindow.document.write('<p>+998905251243</p>');
-        printWindow.document.write('<p>+998902059000</p>');
+
+        printWindow.document.write(`<img src="${url}${ckeckPrint.image}" alt="Image" />`);
+        printWindow.document.write(`<p>${ckeckPrint.name}</p>`);
+        printWindow.document.write(`<p>${ckeckPrint.address}</p>`);
+        printWindow.document.write(`<p>${ckeckPrint.phone}</p>`);
+        printWindow.document.write(`<p>${ckeckPrint.check_shift?.name || ''}</p>`);
         printWindow.document.write(`<b>${(checkObject.payment)?.toLocaleString('en-US').replace(/,/g, ' ')}</b>`);
         printWindow.document.write('</div>');
         printWindow.document.write('</body></html>');
@@ -467,12 +512,14 @@ const Intro = () => {
     };
 
     return (
-        <section className={styles.intro}>
+        <section onClick={() => inputQrcodeRef.current.focus()} className={styles.intro}>
             <div
                 className={`${styles.modalOpacity} ${modal ? styles.actModal : sale ? styles.actModal : ""}`}
                 onClick={() => {
                     setModal(false)
                     setSale(false)
+                    setScanResult("");
+                    inputQrcodeRef.current.value = '';
                 }}
             ></div>
             <div className={`${styles.modal} ${sale ? styles.actModal : ""}`}>
@@ -553,14 +600,15 @@ const Intro = () => {
                                 </label>
                             </div>
                             <div className={styles.modal__sale__body__form__bottom}>
-                                <span>
-                                    <p>Кешбек карта</p>
-                                    <button onClick={() => {
-                                        setDeCard(!deCard)
-                                    }} className={styles.saleAct} type="button">
-                                        <i className="fa-regular fa-credit-card"></i>
-                                    </button>
-                                </span>
+
+                                <div>
+                                    <span>
+                                        <p>Кешбек карта</p>
+                                        <button onClick={() => setDeCard(!deCard)} type="button">
+                                            <i className="fa-regular fa-credit-card"></i>
+                                        </button>
+                                    </span>
+                                </div>
                                 <span>
                                     <p>Чек чиқариш</p>
                                     <button type="submit" onClick={handlePrint}>
@@ -686,7 +734,11 @@ const Intro = () => {
                             }}>
                                 <i className="fa-solid fa-check"></i>
                             </button>
-                            <button onClick={() => { setModal(false) }}>
+                            <button onClick={() => {
+                                setModal(false)
+                                setScanResult("");
+                                inputQrcodeRef.current.value = '';
+                            }}>
                                 <i className="fa-solid fa-x"></i>
                             </button>
                         </div>
@@ -758,12 +810,12 @@ const Intro = () => {
                                                 <p>
                                                     {
                                                         (item.amount_of_box > 0) && (
-                                                            `${(item.amount_of_box)?.toLocaleString('en-US').replace(/,/g, ' ')}-pachka, `
+                                                            `${(item.amount_of_box)?.toLocaleString('en-US').replace(/,/g, ' ')}-pachka `
                                                         )
                                                     }
                                                     {
                                                         (item.amount_of_package > 0) && (
-                                                            `${(item.amount_of_package)?.toLocaleString('en-US').replace(/,/g, ' ')}-kaseta, `
+                                                            `${(item.amount_of_package)?.toLocaleString('en-US').replace(/,/g, ' ')}-kaseta `
                                                         )
                                                     }
                                                     {

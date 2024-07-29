@@ -8,49 +8,9 @@ import ErrorMessage from '@/app/components/ui/Message/ErrorMessage/ErrorMessage'
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-
-const dataTable = [
-    {
-        id: 1,
-        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
-        quantity: 20,
-        price: 23000,
-        share: "Узбекиjстан",
-    },
-    {
-        id: 2,
-        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
-        quantity: 20,
-        price: 23000,
-        share: "Узбекистан",
-    },
-    {
-        id: 3,
-        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
-        quantity: 20,
-        price: 23000,
-        share: "Узбекистан",
-    },
-    {
-        id: 4,
-        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
-        quantity: 20,
-        price: 23000,
-        share: "Узбекистан",
-    },
-    {
-        id: 5,
-        name: 'BROMGEKSIN BERLIN HEMI GERMANIYA 100mg',
-        quantity: 20,
-        price: 23000,
-        share: "Узбекистан",
-    },
-]
-
 const WorkersInrto = () => {
     const { setError, url, auth_token } = React.useContext(Context);
     const [activeLeft, setActiveLeft] = React.useState('Ишчилар');
-    const [activeRight, setActiveRight] = React.useState('Бугун');
     const [modal, setModal] = React.useState(false)
     const [de, setDe] = React.useState(false)
     const [dataChart, setDataChart] = React.useState([])
@@ -92,6 +52,12 @@ const WorkersInrto = () => {
             label: 'Ишчилар',
             action: () => {
                 router.push('/workers')
+            }
+        },
+        {
+            label: 'Чегирма карталар',
+            action: () => {
+                router.push('/desc')
             }
         },
         {

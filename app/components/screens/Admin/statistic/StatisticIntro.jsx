@@ -54,6 +54,12 @@ const StatisticIntro = () => {
             }
         },
         {
+            label: 'Чегирма карталар',
+            action: () => {
+                router.push('/desc')
+            }
+        },
+        {
             label: 'Созламалар',
             action: () => {
                 router.push('/settings')

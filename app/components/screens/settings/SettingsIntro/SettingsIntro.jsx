@@ -62,6 +62,12 @@ const SettingsIntro = () => {
             }
         },
         {
+            label: 'Чегирма карталар',
+            action: () => {
+                router.push('/desc')
+            }
+        },
+        {
             label: 'Созламалар',
             action: () => {
                 router.push('/settings')
@@ -731,7 +737,7 @@ const SettingsIntro = () => {
                             <label htmlFor="logoFile">
                                 <p>Логотип:</p>
                                 <input
-                                className={styles.logoFile}
+                                    className={styles.logoFile}
                                     type="file"
                                     id="logoFile"
                                     name="logoFile"

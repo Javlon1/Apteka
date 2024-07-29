@@ -7,11 +7,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const Header = () => {
-    const { url, setAuth_token, auth_token, setSale, setType } = useContext(Context);
+    const { url, setAuth_token, auth_token, sale, setSale, setType } = useContext(Context);
     const [dateTime, setDateTime] = useState(new Date());
     const { pathname } = useRouter();
     const router = useRouter();
     const [modal, setModal] = useState(false)
+    const [userData, setUserData] = useState([])
 
     const [formData, setFormData] = useState({
         expenseType: '',
@@ -151,6 +152,37 @@ const Header = () => {
         }
     };
 
+    useEffect(() => {
+        const fullUrl = `${url}/profile`;
+        const fetchData = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data) {
+                    setUserData(data)
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
+
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
+
+        fetchData();
+    }, [sale])
 
     return (
         <div>
@@ -198,20 +230,20 @@ const Header = () => {
                         </form>
                     </div>
                 </div>
-                <Image
-                    src={logo}
-                    alt='logo'
-                    priority
-                />
+                <h1 style={{ color: 'white' }}>Darmon</h1>
                 <div className={styles.header__items}>
                     <div className={styles.header__items__time}>
                         <p>{formatDate(dateTime)}</p>
                         <p>{formatTime(dateTime)}</p>
                     </div>
-                    <div className={styles.header__items__star}>
-                        <i className="fa-regular fa-star"></i>
-                        <p>213.560</p>
-                    </div>
+                    {
+                        (pathname === '/login' || pathname === '/profil') && (
+                            <div className={styles.header__items__star}>
+                                <i className="fa-regular fa-star"></i>
+                                <p>{userData.overall_user_score}</p>
+                            </div>
+                        )
+                    }
                 </div>
             </header>
             {/* sidebar start */}

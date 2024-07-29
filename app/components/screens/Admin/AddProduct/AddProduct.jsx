@@ -43,6 +43,12 @@ const AddProduct = () => {
         { label: 'Товар кирими', action: () => router.push('/product') },
         { label: 'Чакана савдо', action: () => router.push('/chakana-savdo') },
         { label: 'Ишчилар', action: () => router.push('/workers') },
+        {
+            label: 'Чегирма карталар',
+            action: () => {
+                router.push('/desc')
+            }
+        },
         { label: 'Созламалар', action: () => router.push('/settings') }
     ];
 
