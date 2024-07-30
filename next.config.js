@@ -15,6 +15,6 @@ module.exports = {
 
   // Настройки для компонента next/image
   images: {
-    domains: ["f4d9cfc13291836aa3fc818ee5fc87a3.serveo.net"], // Домен сайта
+    domains: ["a081870889502de05c7a82a5d155385b.serveo.net"], // Домен сайта
   },
 };

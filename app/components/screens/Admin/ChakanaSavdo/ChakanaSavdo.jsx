@@ -6,8 +6,6 @@ import { Context } from '@/app/components/ui/Context/Context';
 import { useRouter } from 'next/router';
 import calendar from '../../../../../public/img/calendar.png'
 import ErrorMessage from '@/app/components/ui/Message/ErrorMessage/ErrorMessage';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 
 const ChakanaSavdo = () => {
     const { setError, auth_token, url } = React.useContext(Context);
@@ -165,19 +163,6 @@ const ChakanaSavdo = () => {
         ///// get statistics End
     };
 
-    const exportPDF = () => {
-        const input = document.getElementById('tableToExport');
-        html2canvas(input).then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save('table.pdf');
-        });
-    };
-
 
     ///// get statistics Start
     React.useEffect(() => {
@@ -214,7 +199,45 @@ const ChakanaSavdo = () => {
     }, [date]);
     ///// get statistics End
 
-    console.log(dataTable);
+    const handleSendData = async () => {
+        const tableData = {
+            headers: ["№", "Sana", "Turi", "Mujoz", "Summa", "Naqd", "Carta", "Nasiya", "Kirish Sanasi", "Foydalanuvchi", "Smena", "F.I.O"],
+            rows: dataTable.map((item) => ({
+                sale_id: `${item.sale_id}`,
+                date_added: `${item.date_added}`,
+                sale_type: 'Chakana Savdo',
+                person: `${item.person}`,
+                amount: `${item.amount}`,
+                naqd: `${item.payment_type == "naqd" ? item.amount : 0}`,
+                card: `${item.payment_type == "card" ? item.amount : 0}`,
+                nasiya: `${item.payment_type == "nasiya" ? item.amount : 0}`,
+                date_added_again: `${item.date_added}`,
+                user_type: `${item.user_type}`,
+                shift_name: `${item.shift_name}`,
+                owner_name: `${item.owner_first_name} ${item.owner_last_name}`
+            })),
+            today: new Date().toISOString().slice(0, 10)
+        };
+        console.log(tableData);
+        try {
+            const response = await fetch(`${url}/generate_pdf/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`
+                },
+                body: JSON.stringify(tableData)
+            });
+
+            const data = await response.json();
+
+            if (data.message) {
+                alert(`Muvaffaqiyatli DOCUMENTS-ga saxlanildi!`);
+            }
+        } catch (error) {
+            console.error('Ошибка при отправке данных:', error);
+        }
+    };
 
     return (
         <div className={styles.chakanaSavdo}>
@@ -231,7 +254,7 @@ const ChakanaSavdo = () => {
                                     action();
                                 }}
                             >
-                                {label}
+                                <b>{label}</b>
                             </li>
                         ))}
                     </ul>
@@ -261,7 +284,7 @@ const ChakanaSavdo = () => {
                     </form>
                     <button
                         className={styles.chakanaSavdo__center__left__pdf}
-                        onClick={exportPDF}
+                        onClick={handleSendData}
                     >
                         <i className="fa-solid fa-file-invoice"></i>
                         Export
@@ -293,13 +316,13 @@ const ChakanaSavdo = () => {
                             <th>Тури</th>
                             <th>Мижоз</th>
                             <th>сумма</th>
-                            <th>накд</th>
-                            <th>Karta</th>
+                            <th>Накд</th>
+                            <th>Крата</th>
                             <th>Насия</th>
-                            <th>кириш санаси</th>
+                            <th>Кириш санаси</th>
                             <th>Фойдаланувчи</th>
-                            <th>смена</th>
-                            <th>ф.и.о</th>
+                            <th>Смена</th>
+                            <th>Ф.И.О</th>
                         </tr>
                     </thead>
                     <tbody>

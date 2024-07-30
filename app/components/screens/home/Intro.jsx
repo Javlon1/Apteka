@@ -350,6 +350,7 @@ const Intro = () => {
         calculateTotal();
     }, [formData]);
 
+
     const handleDiscountCardSubmit = async (e) => {
         const fullUrl = `${url}/start_capture/`;
 
@@ -372,7 +373,6 @@ const Intro = () => {
         }
     };
 
-
     useEffect(() => {
         if (deCard) {
             const intervalId = setInterval(() => {
@@ -393,11 +393,11 @@ const Intro = () => {
                         }
 
                         const data = await response.json();
+                        console.log(data)
+                        if (data.scanned_data.number) {
 
-                        if (data) {
-
-                            setDiscountCard(data)
-
+                            setDiscountCard(data.scanned_data.number)
+                            setDeCard(false)
                         } else {
                             console.error('Ошибка: Некорректные данные получены от сервера.');
                         }
@@ -416,70 +416,71 @@ const Intro = () => {
 
     console.log(discountCard);
 
-    // useEffect(() => {
-    //     if (discountCard) {
-    //         const handleDiscountCardStopSubmit = async (e) => {
-    //             const fullUrl = `${url}/stop_capture/`;
+    useEffect(() => {
+        if (discountCard && !deCard) {
+            const handleDiscountCardStopSubmit = async (e) => {
+                const fullUrl = `${url}/stop_capture/`;
 
-    //             try {
-    //                 const response = await fetch(fullUrl, {
-    //                     method: 'POST',
-    //                     headers: {
-    //                         'Content-Type': 'application/json',
-    //                         'Authorization': `Bearer ${auth_token}`,
-    //                     },
-    //                 });
+                try {
+                    const response = await fetch(fullUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${auth_token}`,
+                        },
+                    });
 
-    //                 const data = await response.json();
+                    const data = await response.json();
 
-    //                 if (data.message) {
-    //                     setDeCard(true)
-    //                 }
-    //             } catch (error) {
-    //                 console.error('Error during POST request:', error);
-    //             }
-    //         };
-    //         handleDiscountCardStopSubmit()
+                    if (data.message) {
+                        setDeCard(false)
+                        setDiscountCard("")
+                    }
+                } catch (error) {
+                    console.error('Error during POST request:', error);
+                }
+            };
+            handleDiscountCardStopSubmit()
 
-    //     }
-    // }, [discountCard])
+        }
+    }, [discountCard, deCard])
 
 
-    // useEffect(() => {
+    useEffect(() => {
 
-    //     const fullUrl = `${url}/admin/card/?card_id=${discountCard}`; //discountCard
+        const fullUrl = `${url}/admin/card/?card_id=${discountCard}`; //discountCard
 
-    //     const Cardhandler = async () => {
-    //         try {
-    //             const response = await fetch(fullUrl, {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': `Bearer ${auth_token}`,
-    //                 },
-    //             });
+        const Cardhandler = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth_token}`,
+                    },
+                });
 
-    //             if (!response.ok) {
-    //                 throw new Error(`Ошибка: ${response.status}`);
-    //             }
+                if (!response.ok) {
+                    throw new Error(`Ошибка: ${response.status}`);
+                }
 
-    //             const data = await response.json();
+                const data = await response.json();
 
-    //             if (data) {
+                if (data) {
 
-    //                 setCard(data)
+                    setCard(data)
 
-    //             } else {
-    //                 console.error('Ошибка: Некорректные данные получены от сервера.');
-    //             }
+                } else {
+                    console.error('Ошибка: Некорректные данные получены от сервера.');
+                }
 
-    //         } catch (error) {
-    //             console.error('Ошибка при запросе данных:', error.message);
-    //         }
-    //     };
+            } catch (error) {
+                console.error('Ошибка при запросе данных:', error.message);
+            }
+        };
 
-    //     Cardhandler();
-    // }, [discountCard]);
+        Cardhandler();
+    }, [discountCard]);
 
     const handleSaleSubmit = async (e) => {
         e.preventDefault();

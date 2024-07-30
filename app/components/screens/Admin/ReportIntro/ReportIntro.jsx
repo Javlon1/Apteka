@@ -278,7 +278,7 @@ const ReportIntro = () => {
                                     action();
                                 }}
                             >
-                                {label}
+                                <b>{label}</b>
                             </li>
                         ))}
                     </ul>

@@ -205,7 +205,7 @@ const AddProduct = () => {
                                     action();
                                 }}
                             >
-                                {label}
+                                <b>{label}</b>
                             </li>
                         ))}
                     </ul>

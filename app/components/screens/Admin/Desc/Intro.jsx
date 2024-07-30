@@ -138,7 +138,7 @@ const DescIntro = () => {
                                     action();
                                 }}
                             >
-                                {label}
+                                <b>{label}</b>
                             </li>
                         ))}
                     </ul>

@@ -348,60 +348,12 @@ const WorkersInrto = () => {
                                     action();
                                 }}
                             >
-                                {label}
+                                <b>{label}</b>
                             </li>
                         ))}
                     </ul>
                 </div>
             </div>
-
-            {/* <div className={styles.workers__center}>
-                <div className={styles.workers__center__left}>
-                    <Image
-                        width={40}
-                        height={40}
-                        src={calendar}
-                        alt='calendar'
-                    />
-
-                    <form className={styles.workers__center__left__form} onSubmit={handleSubmit}>
-                        <input
-                            type="date"
-                            value={startDate}
-                            onChange={handleStartDateChange}
-                        />
-                        <input
-                            type="date"
-                            value={endDate}
-                            onChange={handleEndDateChange}
-                        />
-                        <button type='submit'>Филтр</button>
-                    </form>
-                    <button
-                        className={styles.workers__center__left__pdf}
-                        onClick={exportPDF}
-                    >
-                        <i className="fa-solid fa-file-invoice"></i>
-                        Export
-                    </button>
-                </div>
-                <div className={styles.workers__center__right}>
-                    <ul className={styles.workers__center__right__list}>
-                        {rightFunctions.map(({ label, action }) => (
-                            <li
-                                key={label}
-                                className={`${styles.workers__center__right__list__item} ${activeRight === label ? styles.act : ''}`}
-                                onClick={() => {
-                                    setActiveRight(label);
-                                    action();
-                                }}
-                            >
-                                {label}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div> */}
 
             <div id="tableToExport" className={styles.workers__table}>
                 <div className={styles.workers__table__header}>
