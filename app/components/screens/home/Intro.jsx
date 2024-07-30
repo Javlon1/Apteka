@@ -611,131 +611,139 @@ const Intro = () => {
 
     return (
         <section className={styles.intro}>
-            <div
-                className={`${styles.modalOpacity} ${modal ? styles.actModal : sale ? styles.actModal : ""}`}
-                onClick={() => {
-                    setModal(false)
-                    setSale(false)
-                    setScanResult("");
-                    inputQrcodeRef.current.value = '';
-                }}
-            ></div>
-            <div className={`${styles.modal} ${sale ? styles.actModal : ""}`}>
-                <div className={styles.modal__sale}>
-                    <div className={styles.modal__sale__header}>
-                        <span>
-                            <p>Тўлов</p>
-                            <i className="fa-solid fa-money-bill-1"></i>
-                        </span>
-                        <p onClick={() => setSale(false)}>
-                            <i className="fa-solid fa-x"></i>
-                        </p>
-                    </div>
-                    <div className={styles.modal__sale__body}>
-                        <div className={styles.modal__sale__body__top}>
-                            <p>{(checkObject.payment)?.toLocaleString('en-US').replace(/,/g, ' ')}</p>
-                        </div>
-                        <form className={styles.modal__sale__body__form} onSubmit={handleSaleSubmit}>
-                            <div className={styles.modal__sale__body__form__top}>
-                                <label>
-                                    <p>Чегирма</p>
-                                    <input
-                                        type="number"
-                                        name="discount"
-                                        value={checkObject.total_discount}
-                                        onChange={handleChange}
-                                    />
-                                </label>
-                                <label>
-                                    <p>Касса</p>
-                                    <input
-                                        className={styles.inpBack}
-                                        type="number"
-                                        name="cash"
-                                        value={formSaleData.cash}
-                                        onChange={handleChange}
-                                    />
-                                </label>
-                                <label>
+            {
+                (dataItems.length > 0) && (
+                    <div
+                        className={`${styles.modalOpacity} ${modal ? styles.actModal : sale ? styles.actModal : ""}`}
+                        onClick={() => {
+                            setModal(false)
+                            setSale(false)
+                            setScanResult("");
+                            inputQrcodeRef.current.value = '';
+                        }}
+                    ></div>
+                )
+            }
+            {
+                (dataItems.length > 0) && (
+                    <div className={`${styles.modal} ${sale ? styles.actModal : ""}`}>
+                        <div className={styles.modal__sale}>
+                            <div className={styles.modal__sale__header}>
+                                <span>
                                     <p>Тўлов</p>
-                                    <input
-                                        type="number"
-                                        name="payment"
-                                        value={checkObject.payment}
-                                        onChange={handleChange}
-                                    />
-                                </label>
-                                {
-                                    (type === "Карта") && (
+                                    <i className="fa-solid fa-money-bill-1"></i>
+                                </span>
+                                <p onClick={() => setSale(false)}>
+                                    <i className="fa-solid fa-x"></i>
+                                </p>
+                            </div>
+                            <div className={styles.modal__sale__body}>
+                                <div className={styles.modal__sale__body__top}>
+                                    <p>{(checkObject.payment)?.toLocaleString('en-US').replace(/,/g, ' ')}</p>
+                                </div>
+                                <form className={styles.modal__sale__body__form} onSubmit={handleSaleSubmit}>
+                                    <div className={styles.modal__sale__body__form__top}>
                                         <label>
-                                            <p>Карта</p>
+                                            <p>Чегирма</p>
                                             <input
                                                 type="number"
-                                                name="humo"
-                                                value={formSaleData.humo}
+                                                name="discount"
+                                                value={checkObject.total_discount}
                                                 onChange={handleChange}
                                             />
                                         </label>
-                                    )
-                                }
-                                <label>
-                                    <p>К/Карта</p>
-                                    <input
-                                        type="number"
-                                        name="card"
-                                        value={card.amount}
-                                        onChange={handleChange}
-                                    />
-                                </label>
-                                <label>
-                                    <p>Жами</p>
-                                    <input
-                                        type="number"
-                                        name="total"
-                                        value={checkObject.total}
-                                        onChange={handleChange}
-                                    />
-                                </label>
-                            </div>
-                            <div className={styles.modal__sale__body__form__bottom}>
-
-                                <div>
-                                    <span>
-                                        <p>Кешбек карта</p>
-                                        <button onClick={() => handleDiscountCardSubmit()} type="button">
-                                            <i className="fa-regular fa-credit-card"></i>
-                                        </button>
-                                    </span>
-                                </div>
-                                <span>
-                                    <p>Чек чиқариш</p>
-                                    <button type="submit" onClick={handlePrint}>
-                                        <Image alt='' src={printer} />
-                                    </button>
-                                </span>
-                                <span>
-                                    {
-                                        type === "Нақд" ? (<p>Нақд савдо</p>) : type === "Карта" ? (<p>Картага савдо</p>) : (<p>Насия савдо</p>)
-                                    }
-                                    <button type="submit">
+                                        <label>
+                                            <p>Касса</p>
+                                            <input
+                                                className={styles.inpBack}
+                                                type="number"
+                                                name="cash"
+                                                value={formSaleData.cash}
+                                                onChange={handleChange}
+                                            />
+                                        </label>
+                                        <label>
+                                            <p>Тўлов</p>
+                                            <input
+                                                type="number"
+                                                name="payment"
+                                                value={checkObject.payment}
+                                                onChange={handleChange}
+                                            />
+                                        </label>
                                         {
-                                            type === "Нақд" ? (<i className="fa-solid fa-money-bill-1"></i>) : type === "Карта" ? (<i className="fa-regular fa-credit-card"></i>) : (<i className="fa-solid fa-hand-holding-heart"></i>)
+                                            (type === "Карта") && (
+                                                <label>
+                                                    <p>Карта</p>
+                                                    <input
+                                                        type="number"
+                                                        name="humo"
+                                                        value={formSaleData.humo}
+                                                        onChange={handleChange}
+                                                    />
+                                                </label>
+                                            )
                                         }
-                                    </button>
-                                </span>
-                                <span>
-                                    <p>Бекор қилиш</p>
-                                    <button onClick={() => {
-                                        closeSubmit()
-                                    }} type="button">
-                                        <i className="fa-solid fa-x"></i>
-                                    </button>
-                                </span>
+                                        <label>
+                                            <p>К/Карта</p>
+                                            <input
+                                                type="number"
+                                                name="card"
+                                                value={card.amount}
+                                                onChange={handleChange}
+                                            />
+                                        </label>
+                                        <label>
+                                            <p>Жами</p>
+                                            <input
+                                                type="number"
+                                                name="total"
+                                                value={checkObject.total}
+                                                onChange={handleChange}
+                                            />
+                                        </label>
+                                    </div>
+                                    <div className={styles.modal__sale__body__form__bottom}>
+
+                                        <div>
+                                            <span>
+                                                <p>Кешбек карта</p>
+                                                <button onClick={() => handleDiscountCardSubmit()} type="button">
+                                                    <i className="fa-regular fa-credit-card"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <span>
+                                            <p>Чек чиқариш</p>
+                                            <button type="submit" onClick={handlePrint}>
+                                                <Image alt='' src={printer} />
+                                            </button>
+                                        </span>
+                                        <span>
+                                            {
+                                                type === "Нақд" ? (<p>Нақд савдо</p>) : type === "Карта" ? (<p>Картага савдо</p>) : (<p>Насия савдо</p>)
+                                            }
+                                            <button type="button">
+                                                {
+                                                    type === "Нақд" ? (<i className="fa-solid fa-money-bill-1"></i>) : type === "Карта" ? (<i className="fa-regular fa-credit-card"></i>) : (<i className="fa-solid fa-hand-holding-heart"></i>)
+                                                }
+                                            </button>
+                                        </span>
+                                        <span>
+                                            <p>Бекор қилиш</p>
+                                            <button onClick={() => {
+                                                closeSubmit()
+                                            }} type="button">
+                                                <i className="fa-solid fa-x"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </form>
                             </div>
-                        </form>
+                        </div>
                     </div>
-                </div>
-            </div>
+                )
+            }
 
             <div className={`${styles.modal} ${modal ? styles.actModal : ""}`}>
                 <div className={styles.modal__body}>
@@ -976,8 +984,6 @@ const Intro = () => {
                         ref={inputRef}
                         type="text"
                         placeholder='Номи/Таркиби бўйича қидириш'
-                        // value={search}
-                        // onChange={handleSearchChange}
                         value={filterText}
                         onChange={handleFilterChange}
                     />
@@ -993,10 +999,9 @@ const Intro = () => {
                 </form>
             </div>
 
-            <div className={styles.intro__bottom}>
+            <div onClick={() => inputQrcodeRef.current.focus()} className={styles.intro__bottom}>
                 <div className={styles.dataTable}>
                     <div className={styles.dataTable__table}>
-
                         <table>
                             <thead>
                                 <tr>
