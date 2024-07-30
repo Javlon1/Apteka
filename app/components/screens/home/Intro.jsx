@@ -445,6 +445,7 @@ const Intro = () => {
         }
     }, [discountCard, deCard])
 
+    console.log(discountCard);
 
     useEffect(() => {
 
@@ -480,7 +481,7 @@ const Intro = () => {
         };
 
         Cardhandler();
-    }, [discountCard]);
+    }, [discountCard, deCard]);
 
     const handleSaleSubmit = async (e) => {
         e.preventDefault();
