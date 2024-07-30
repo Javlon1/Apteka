@@ -15,6 +15,6 @@ module.exports = {
 
   // Настройки для компонента next/image
   images: {
-    domains: ["apteka-ut54.onrender.com"], // Домен сайта
+    domains: ["f4d9cfc13291836aa3fc818ee5fc87a3.serveo.net"], // Домен сайта
   },
 };

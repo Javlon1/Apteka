@@ -17,6 +17,9 @@ const Intro = () => {
     const [dataItems, setDataItems] = useState([])
     const [checkObject, setCheckObject] = useState([])
     const [totalAmount, setTotalAmount] = useState(0);
+    const [discountCard, setDiscountCard] = useState(0);
+
+    // onClick={() => inputQrcodeRef.current.focus()}
 
     const [formSaleData, setFormSaleData] = useState({
         discount: '',
@@ -347,41 +350,136 @@ const Intro = () => {
         calculateTotal();
     }, [formData]);
 
-    useEffect(() => {
+    const handleDiscountCardSubmit = async (e) => {
+        const fullUrl = `${url}/start_capture/`;
 
-        const fullUrl = `${url}/admin/card/?card_id=${3}`; //discountCard
+        try {
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth_token}`,
+                },
+            });
 
-        const Cardhandler = async () => {
-            try {
-                const response = await fetch(fullUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${auth_token}`,
-                    },
-                });
+            const data = await response.json();
 
-                if (!response.ok) {
-                    throw new Error(`Ошибка: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                if (data) {
-
-                    setCard(data)
-
-                } else {
-                    console.error('Ошибка: Некорректные данные получены от сервера.');
-                }
-
-            } catch (error) {
-                console.error('Ошибка при запросе данных:', error.message);
+            if (data.message) {
+                setDeCard(true)
             }
-        };
+        } catch (error) {
+            console.error('Error during POST request:', error);
+        }
+    };
 
-        Cardhandler();
+
+    useEffect(() => {
+        if (deCard) {
+            const intervalId = setInterval(() => {
+                const fullUrl = `${url}/get_scanned_data/`;
+
+                const Cardhandler = async () => {
+                    try {
+                        const response = await fetch(fullUrl, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${auth_token}`,
+                            },
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`Ошибка: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+
+                        if (data) {
+
+                            setDiscountCard(data)
+
+                        } else {
+                            console.error('Ошибка: Некорректные данные получены от сервера.');
+                        }
+
+                    } catch (error) {
+                        console.error('Ошибка при запросе данных:', error.message);
+                    }
+                };
+
+                Cardhandler();
+            }, 1000);
+
+            return () => clearInterval(intervalId);
+        }
     }, [deCard]);
+
+    console.log(discountCard);
+
+    // useEffect(() => {
+    //     if (discountCard) {
+    //         const handleDiscountCardStopSubmit = async (e) => {
+    //             const fullUrl = `${url}/stop_capture/`;
+
+    //             try {
+    //                 const response = await fetch(fullUrl, {
+    //                     method: 'POST',
+    //                     headers: {
+    //                         'Content-Type': 'application/json',
+    //                         'Authorization': `Bearer ${auth_token}`,
+    //                     },
+    //                 });
+
+    //                 const data = await response.json();
+
+    //                 if (data.message) {
+    //                     setDeCard(true)
+    //                 }
+    //             } catch (error) {
+    //                 console.error('Error during POST request:', error);
+    //             }
+    //         };
+    //         handleDiscountCardStopSubmit()
+
+    //     }
+    // }, [discountCard])
+
+
+    // useEffect(() => {
+
+    //     const fullUrl = `${url}/admin/card/?card_id=${discountCard}`; //discountCard
+
+    //     const Cardhandler = async () => {
+    //         try {
+    //             const response = await fetch(fullUrl, {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     'Authorization': `Bearer ${auth_token}`,
+    //                 },
+    //             });
+
+    //             if (!response.ok) {
+    //                 throw new Error(`Ошибка: ${response.status}`);
+    //             }
+
+    //             const data = await response.json();
+
+    //             if (data) {
+
+    //                 setCard(data)
+
+    //             } else {
+    //                 console.error('Ошибка: Некорректные данные получены от сервера.');
+    //             }
+
+    //         } catch (error) {
+    //             console.error('Ошибка при запросе данных:', error.message);
+    //         }
+    //     };
+
+    //     Cardhandler();
+    // }, [discountCard]);
 
     const handleSaleSubmit = async (e) => {
         e.preventDefault();
@@ -397,7 +495,7 @@ const Intro = () => {
                 },
                 body: JSON.stringify({
                     check_id: dataCheck,
-                    discount_card_id: 0,//discountCard ? discountCard :
+                    discount_card_id: discountCard ? discountCard : 0,
                     from_discount_card: card.amount,
                     payment_type: type === "Нақд" ? "naqd" : type === "Карта" ? "plastik" : type === "Насия" ? "nasiya" : "",
                     discount: checkObject.total_discount,
@@ -511,7 +609,7 @@ const Intro = () => {
     };
 
     return (
-        <section onClick={() => inputQrcodeRef.current.focus()} className={styles.intro}>
+        <section className={styles.intro}>
             <div
                 className={`${styles.modalOpacity} ${modal ? styles.actModal : sale ? styles.actModal : ""}`}
                 onClick={() => {
@@ -553,7 +651,7 @@ const Intro = () => {
                                         className={styles.inpBack}
                                         type="number"
                                         name="cash"
-                                        value={formData.cash}
+                                        value={formSaleData.cash}
                                         onChange={handleChange}
                                     />
                                 </label>
@@ -573,7 +671,7 @@ const Intro = () => {
                                             <input
                                                 type="number"
                                                 name="humo"
-                                                value={formData.humo}
+                                                value={formSaleData.humo}
                                                 onChange={handleChange}
                                             />
                                         </label>
@@ -603,7 +701,7 @@ const Intro = () => {
                                 <div>
                                     <span>
                                         <p>Кешбек карта</p>
-                                        <button onClick={() => setDeCard(!deCard)} type="button">
+                                        <button onClick={() => handleDiscountCardSubmit()} type="button">
                                             <i className="fa-regular fa-credit-card"></i>
                                         </button>
                                     </span>

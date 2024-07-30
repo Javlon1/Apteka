@@ -110,9 +110,9 @@ const DescIntro = () => {
 
                 pdf.addImage(imgData, 'PNG', 10, 10, 50, 50);
 
-                pdf.text(70, 20, `Исми: ${item.name}`);
-                pdf.text(70, 30, `Фамилияси: ${item.surname}`);
-                pdf.text(70, 40, `Телефон: ${item.number}`);
+                pdf.text(70, 20, `Ismi: ${item.name}`);
+                pdf.text(70, 30, `Familiyasi: ${item.surname}`);
+                pdf.text(70, 40, `Telefon raqami: ${item.number}`);
 
                 pdf.save("qr_code.pdf");
             }).catch(error => {

@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from 'react'
 const Context = createContext()
 
 function Provider({ children }) {
-    const [url] = useState("https://apteka-ut54.onrender.com")
+    const [url] = useState("https://f4d9cfc13291836aa3fc818ee5fc87a3.serveo.net")
     const [order, setOrder] = useState([])
     const [type, setType] = useState('')
     const [error, setError] = useState(false)
