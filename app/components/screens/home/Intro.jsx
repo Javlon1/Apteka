@@ -394,9 +394,9 @@ const Intro = () => {
 
                         const data = await response.json();
                         console.log(data)
-                        if (data.scanned_data.number) {
+                        if (data.scanned_data) {
 
-                            setDiscountCard(data.scanned_data.number)
+                            setDiscountCard(data.scanned_data)
                             setDeCard(false)
                         } else {
                             console.error('Ошибка: Некорректные данные получены от сервера.');
@@ -414,36 +414,7 @@ const Intro = () => {
         }
     }, [deCard]);
 
-    console.log(discountCard);
 
-    useEffect(() => {
-        if (discountCard && !deCard) {
-            const handleDiscountCardStopSubmit = async (e) => {
-                const fullUrl = `${url}/stop_capture/`;
-
-                try {
-                    const response = await fetch(fullUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${auth_token}`,
-                        },
-                    });
-
-                    const data = await response.json();
-
-                    if (data.message) {
-                        setDeCard(false)
-                        setDiscountCard("")
-                    }
-                } catch (error) {
-                    console.error('Error during POST request:', error);
-                }
-            };
-            handleDiscountCardStopSubmit()
-
-        }
-    }, [discountCard, deCard])
 
     console.log(discountCard);
 
@@ -468,7 +439,7 @@ const Intro = () => {
                 const data = await response.json();
 
                 if (data) {
-
+                    console.log(data);
                     setCard(data)
 
                 } else {

@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from 'react'
 const Context = createContext()
 
 function Provider({ children }) {
-    const [url] = useState("https://a081870889502de05c7a82a5d155385b.serveo.net")
+    const [url] = useState("http://127.0.0.1:8000")
     const [order, setOrder] = useState([])
     const [type, setType] = useState('')
     const [error, setError] = useState(false)
